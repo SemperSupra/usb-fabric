@@ -1,0 +1,36 @@
+name: USB Fabric combined offline source qualification
+on:
+  pull_request:
+    branches: [integration/issue-3-source-convergence]
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: usb-fabric-issue3-combined-offline
+  cancel-in-progress: false
+jobs:
+  combined-offline:
+    if: ${{ github.event.pull_request.head.ref == 'test/issue-3-combined-offline' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.sha == 'dac830f9be31036848fcc343fa677db498036586' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 'dac830f9be31036848fcc343fa677db498036586'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact combined candidate offline
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: 'off'
+          GOSUMDB: 'off'
+          GOWORK: 'off'
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = 'dac830f9be31036848fcc343fa677db498036586'
+          uname -srm
+          git --version
+          go version
+          python3 --version
+          df -h .
+          /usr/bin/time -v bash qualification/verify-combined-offline.sh
