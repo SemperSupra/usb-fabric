@@ -1,0 +1,117 @@
+{
+  "schema": "usb-fabric/source-convergence/v1",
+  "status": "SOURCE_CANDIDATE_NOT_QUALIFIED",
+  "common_ancestor": "1957a30e5ebc968a1e6de4b0fad1c66549f0a3c9",
+  "native_parent": "20af19404e1a8bce63d91fd735887d76359e05d9",
+  "managed_parent": "a296b31c6d8ab2fa61b3d66f886f9b691cf8ce82",
+  "native_delta": [
+    {
+      "path": "experiments/usb-fabric-r26/integrated/cmd/actuator/main.go",
+      "mode": "100644",
+      "sha": "c81e0098b2bc697fe4852e4c14f8f94bb7ae3f69"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_guest_pin_linux.go",
+      "mode": "100644",
+      "sha": "1d12fb0cca1988f64f53b2d4b21dd78909421adc"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_guest_pin_linux_test.go",
+      "mode": "100644",
+      "sha": "12f3a9d748d2dca64c5b5f24ddbd0ffd191faa8c"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_qmp_linux.go",
+      "mode": "100644",
+      "sha": "2fa78d12479c64fea33e080028f766317cf3ec2c"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/cmd/actuator/runtime.go",
+      "mode": "100644",
+      "sha": "49c921e0c4c71843d261f8917270f158491701e5"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/protected_signed_hid_oracle.py",
+      "mode": "100644",
+      "sha": "3b762082abdbd64592455ccfbcaaae8caa0821eb"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh",
+      "mode": "100755",
+      "sha": "878e436b3cc8e2e828061c3aad29b6bc3b52a338"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/releasegate/guestwire/Dockerfile",
+      "mode": "100644",
+      "sha": "1868a6b0edcaadf07e5c3b8d0b825f25e13cfde3"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/runtimeguest/main.go",
+      "mode": "100644",
+      "sha": "9a2c1890ecaf0bdb5cf637440cf67290cbdf52b0"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/releasegate/runtimeproof/instance_enrollment_test.go",
+      "mode": "100644",
+      "sha": "10835cf723b08a6992620d33be274e59bbb7696d"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/releasegate/runtimeproof/proof.go",
+      "mode": "100644",
+      "sha": "7460d4f7d7a2ebe58ed25f6daafaa644cdc7de49"
+    }
+  ],
+  "managed_delta": [
+    "docs/migration/three-kernel-adoption.json",
+    "experiments/pi-usb-fabric-r06/transport/hid_evdev_observer.c",
+    "experiments/pi-usb-fabric-r22/qmp-usbip-compose/usbip-guest-signing/consumer-a.init",
+    "experiments/pi-usb-fabric-r22/qmp-usbip-compose/usbip-guest-signing/run.sh",
+    "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/Dockerfile",
+    "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/qmp_observer.py",
+    "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/run.sh",
+    "experiments/pi-usb-fabric-r26/qmp-vhci-domain/Dockerfile",
+    "experiments/pi-usb-fabric-r26/qmp-vhci-domain/qmp_pci.py",
+    "experiments/pi-usb-fabric-r26/qmp-vhci-domain/run.sh",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile.base",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/broker.go",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/qualify.sh",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/run.sh",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify-product.sh",
+    "experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify.sh",
+    "experiments/pi-usb-fabric-r27/uart-ack/provider.init",
+    "experiments/pi-usb-fabric-r27/udc-hostpin-composite/Dockerfile",
+    "experiments/pi-usb-fabric-r27/udc-hostpin-composite/run.sh",
+    "experiments/pi-usb-fabric-r27/usbip-hostpin/Dockerfile",
+    "experiments/pi-usb-fabric-r27/usbip-hostpin/run.sh",
+    "experiments/usb-fabric-r26/integrated/blue/scoped_tcp_witness_linux_test.go",
+    "qualification/managed-inputs/pin/experiments/pi-usb-fabric-r26/host-pin/guest-main.go",
+    "qualification/managed-inputs/pin/experiments/pi-usb-fabric-r26/host-pin/keygen.go",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/cmd/attack/main.go",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/cmd/verify/main.go",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/go.mod",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/guest-signing-main.go",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/host-ed25519-main.go",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/signer.go",
+    "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/signer_test.go",
+    "qualification/managed-inputs/udc/experiments/pi-usb-fabric-r27/udc-admission/consumer-b.init",
+    "qualification/verify-three-kernel-adoption.py"
+  ],
+  "historical_workflows": [
+    {
+      "path": "qualification/origin/native-enrollment.yml",
+      "sha": "0fb397f9b8a25d8620c7bff1b12a428d3b7be0e4",
+      "parent": "20af19404e1a8bce63d91fd735887d76359e05d9"
+    },
+    {
+      "path": "qualification/origin/managed-three-kernel.yml",
+      "sha": "54e153ba197f37025efb142694a29db68e07b192",
+      "parent": "a296b31c6d8ab2fa61b3d66f886f9b691cf8ce82"
+    }
+  ],
+  "qualification": {
+    "offline": "NOT_RUN",
+    "runtime": "NOT_RUN",
+    "release": "NO_GO"
+  }
+}

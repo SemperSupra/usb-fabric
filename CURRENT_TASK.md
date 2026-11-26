@@ -1,7 +1,7 @@
-# CURRENT_TASK
+# CURRENT_TASK — combined Fabric source candidate
 
-Read [bootstrap issue #1](https://github.com/SemperSupra/usb-fabric/issues/1), AGENTS.md and [source adoption plan](docs/migration/source-adoption.json). State: destination preparation, no source import or authority transfer. Inventory exact candidate module paths and transitive source dependencies; review license/provenance and source-only extraction, excluding all inherited workflow definitions. Do not import entire experimental trees. Prepare independent native and managed source adoption PRs from approved inventory.
+Read [migration #3](https://github.com/SemperSupra/usb-fabric/issues/3), AGENTS.md and [source convergence manifest](docs/migration/source-convergence.json). This branch composes the two prior qualified source stacks, not their verdicts. Native #9 and managed #12 are both exact parents. Existing separate workcells retain evidence and RED; no new authority.
 
-Source adoption is profile-specific. Native first: protected QMP, actual guest HID and release, controller recovery and trusted guest enrollment. Managed: stable source identity, scoped journal, independently verified effective isolation and G4. Native does not depend on managed G4.
+First run `bash qualification/verify-combined-offline.sh` in a clean full Git checkout with Go 1.23+ and Python 3. Verify all parent-relative blobs and modes, original three-kernel source map, both modules race/vet and oracle parse. This candidate has no active workflow. Historical recipes in qualification/origin are inert references; do not launch them as-is (branch/parent guards and timeouts differ). After offline PASS, separately admit bounded public runs for native and managed oracles on the same candidate SHA. No private projection, release or HIL.
 
-No release, private source publication, paid execution or HIL.
+Next P0: #7 authenticated recovery and #11 scoped first admission and independent managed witnesses. G4 NO_GO. Public licensing unresolved. Do not merge without reviewed qualification and owner gate.

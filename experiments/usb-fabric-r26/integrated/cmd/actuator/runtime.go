@@ -25,6 +25,7 @@ func (a *actuator)bindRuntimeGuestLease(lease blue.Lease)error{
   return errors.New("cannot bind signed lease while held/unavailable")
  }
  scope:=guestwire.Scope()
+ if a.protectedGuest{scope.GuestEpoch=a.guestEpoch}
  scope.HostEpoch=lease.Epoch
  scope.LeaseEpoch=fmt.Sprintf("%s/%d",lease.Epoch,lease.Generation)
  scope.Generation=lease.Generation
@@ -64,7 +65,14 @@ func (a *actuator)applyRuntimeGuestReceipt(event runtimeproof.Event){
   fmt.Println("R27C_OLD_SIGNED_GUEST_SCOPE_REPLAY_REJECTED=PASS")
   return
  }
+ if event.Source=="guest.enrollment"{
+  if a.protectedGuest && auth.ConfirmEnrollment(event)==nil{
+   fmt.Printf("PROTECTED_GUEST_FRESH_LEASE_ENROLLMENT_VERIFIED=PASS generation=%d\n",scope.Generation)
+  }
+  return
+ }
  if event.Down{
+  if a.protectedGuest&&!auth.Enrolled(){return}
   if err:=auth.ObserveDown(event);err!=nil{return}
   a.proofMu.Lock()
   if a.scope==event.Scope{a.firstDownSequence=event.EventSequence}
