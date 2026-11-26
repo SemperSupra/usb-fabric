@@ -12,6 +12,8 @@ import (
  "bytes"
  "crypto/ed25519"
  "crypto/rand"
+ "crypto/sha256"
+ "encoding/hex"
  "encoding/binary"
  "errors"
  "io"
@@ -79,6 +81,7 @@ type Authority struct{
  down uint64
  acked bool
  confirmed bool
+ enrolled bool
 }
 
 // NewAuthority MUST be called ONLY with a trusted, pre-pinned guest public
@@ -131,3 +134,30 @@ func (a *Authority)Reclaimable()bool{
  a.mu.Lock();defer a.mu.Unlock()
  return a.confirmed
 }
+
+ // InstanceEpoch binds the test enrollment to the public half of a freshly
+ // provisioned per-launch key. It is not measured-boot or hardware identity.
+ func InstanceEpoch(pub ed25519.PublicKey)string{
+  if len(pub)!=ed25519.PublicKeySize{return ""}
+  sum:=sha256.Sum256(pub)
+  return "instance-"+hex.EncodeToString(sum[:])
+ }
+ // ConfirmEnrollment authenticates possession for this exact lease challenge,
+ // separate from EV_KEY evidence and incapable of confirming release.
+ func(a *Authority)ConfirmEnrollment(e Event)error{
+  if a==nil{return ErrUntrusted}
+  a.mu.Lock();defer a.mu.Unlock()
+  if a.enrolled||a.down!=0||a.acked||a.confirmed||
+   e.Scope!=a.scope||e.Challenge!=a.challenge||
+   e.Source!="guest.enrollment"||e.KeyCode!="instance"||e.Down||e.EventSequence!=1||
+   len(e.Signature)!=ed25519.SignatureSize||!ed25519.Verify(a.public,message(e),e.Signature){
+   return ErrUntrusted
+  }
+  a.enrolled=true
+  return nil
+ }
+ func(a *Authority)Enrolled()bool{
+  if a==nil{return false}
+  a.mu.Lock();defer a.mu.Unlock()
+  return a.enrolled
+ }

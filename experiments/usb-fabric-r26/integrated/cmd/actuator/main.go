@@ -237,6 +237,7 @@ type executor struct {
  journal heldledger.Store
  gate *releasegate.Gate // optional TEST-ONLY evdev proof gate, never a client API
  runtimeProof *runtimeproof.Authority // host-pinned Ed25519 path (synthetic)
+ requireEnrollment bool
  mu sync.Mutex
 }
 func (e *executor) qmpKey(down bool)error {
@@ -254,9 +255,10 @@ func (e *executor) Input(command string)error {
  e.mu.Lock();defer e.mu.Unlock()
  switch command {
  case "key-a-down":
+  if e.requireEnrollment && (e.runtimeProof==nil || !e.runtimeProof.Enrolled()){return blue.ErrDenied}
   state,err:=e.journal.Read()
   if err!=nil{return err}
-  if state.Held{return blue.ErrDenied}
+  if state.Held||state.AdmissionIntent{return blue.ErrDenied}
   if _,err=e.journal.Transition(state.Sequence,true);err!=nil{return err}
   return e.qmpKey(true)
  case "key-a-up":
@@ -329,6 +331,9 @@ type actuator struct{
  ex *executor
  runtimeMode bool
  pinnedGuestKey ed25519.PublicKey
+ protectedGuest bool
+ guestEpoch string
+ receiptPeerPID int
  runtimeProof *runtimeproof.Authority
  authorizedPeerUID int
  policy operationPolicy
@@ -343,7 +348,7 @@ func (a *actuator)startReceiptReader(path string)error {
  var conn net.Conn
  var err error
  for i:=0;i<50;i++{
-  conn,err=net.DialTimeout("unix",path,500*time.Millisecond)
+  if a.protectedGuest{conn,err=connectProtectedUnixPeer(path,a.receiptPeerPID)}else{conn,err=net.DialTimeout("unix",path,500*time.Millisecond)}
   if err==nil{break}
   time.Sleep(40*time.Millisecond)
  }
@@ -627,6 +632,9 @@ func main(){
   os.Exit(8)
  }
  ex:=&executor{q:q,journal:journal}
+ if recovered.AdmissionIntent || recovered.ReleasePhase=="kernel-isolated" {
+  fmt.Fprintln(os.Stderr,"native startup rejects foreign/ambiguous managed admission state");os.Exit(8)
+ }
  if recovered.Held {
   // QMP ACK cannot prove that the guest input driver actually observed
   // key-up. Preserve the held journal and refuse client admission until
@@ -659,7 +667,8 @@ func main(){
  a:=&actuator{m:blue.New("keyboard","xhci0/auto",ex),q:q,
   media:*media,pcap:*pcap,journal:journal,scoped:*scopedReceipts,ex:ex,
   runtimeMode:*runtimePubPath!="",
-  authorizedPeerUID:*authorizedPeerUID,policy:policy}
+  authorizedPeerUID:*authorizedPeerUID,policy:policy,
+  protectedGuest:*protectedFrontend && *runtimePubPath!="",receiptPeerPID:*protectedQMPPID}
  if *scopedReceipts && *receiptPath=="" {
   fmt.Fprintln(os.Stderr,"per-lease receipt needs explicit synthetic guest channel");os.Exit(14)
  }
@@ -670,11 +679,17 @@ func main(){
   // The pinned key comes from the CONTROLLED image build, never the guest
   // virtio transport. A public image private key remains extractable;
   // actual TPM/secure boot attestation is outside this synthetic gate.
-  pub,err:=os.ReadFile(*runtimePubPath)
+  var pub []byte
+  if a.protectedGuest{pub,err=readProtectedGuestPin(*runtimePubPath)}else{pub,err=os.ReadFile(*runtimePubPath)}
   if err!=nil||len(pub)!=ed25519.PublicKeySize{
    fmt.Fprintln(os.Stderr,"trusted image-builder guest key pin absent");os.Exit(14)
   }
   a.pinnedGuestKey=append(ed25519.PublicKey(nil),pub...)
+  if a.protectedGuest{
+   a.guestEpoch=runtimeproof.InstanceEpoch(a.pinnedGuestKey)
+   if a.guestEpoch==""{fmt.Fprintln(os.Stderr,"invalid guest instance epoch");os.Exit(14)}
+   ex.requireEnrollment=true
+  }
   fmt.Println("R27C_HOST_BUILDER_GUEST_PUBLIC_KEY_PINNED=PASS")
  }
  if *receiptPath!="" {
