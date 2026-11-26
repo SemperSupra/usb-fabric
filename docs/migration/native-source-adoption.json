@@ -1,0 +1,432 @@
+{
+  "schema": "usb-product/adoption-receipt/v1",
+  "origin": "SemperSupra/agent-dispatch",
+  "origin_commit": "dfc09b99d6d955aeafdbf0246c24fe1f4893d168",
+  "prior_run": 45774154570,
+  "destination": "SemperSupra/usb-fabric",
+  "scope": "Exact public native integrated and releasegate source trees; no legacy workflows imported. Original example.org module paths retained for dependency compatibility, not final package naming.",
+  "license_status": "No LICENSE/COPYING/NOTICE found in pinned origin tree; same-organization migration authorized, no new license selected; external release blocked pending review.",
+  "files": [
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/actuator_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/actuator_oracle.py",
+      "blob": "2e537aa7846daff1339c413e8acfffa7fa1dd03e",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/actuator_restart_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/actuator_restart_oracle.py",
+      "blob": "abdf5d86a269241e8f99bfc08825d8df441c8a48",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/actuator_restart_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/actuator_restart_verify.sh",
+      "blob": "f619bb922ccb3e412f42288c8b9d76671b831cfb",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/actuator_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/actuator_verify.sh",
+      "blob": "3f0b9de136acad79428c2ed3d6a11f15239c2e86",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/blue/model.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/blue/model.go",
+      "blob": "ede1712755b4d8901b9c5a6cac7eb65a97e1829f",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/broker.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/broker.go",
+      "blob": "86d66fbb59689a3c0ebd979d3cd6a406b1bac3f8",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/capabilities_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/capabilities_test.go",
+      "blob": "a7c51e36b0ca2ddf848ca3369054bb0fa7abdf81",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/capabilities.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/capabilities.go",
+      "blob": "9ce1224b31ff7e7f817585de7a5a789b7bf3465e",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/main.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/main.go",
+      "blob": "8a74e18c556c8eadb9262918f159aa50c09d4200",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/owner_order_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/owner_order_test.go",
+      "blob": "ac73b702ad3624ed017b04111e1d4f10eae9255a",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/peer_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/peer_test.go",
+      "blob": "a892dca696800d4f01325f2de651d904c247e74d",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/peer.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/peer.go",
+      "blob": "b38b39708a2eb6cc45b975ac2e098b8c1c38b490",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_frontend_linux_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_frontend_linux_test.go",
+      "blob": "fe9490d45d326c391ca5e3b3ea19db72bfc11388",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_frontend_linux.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_frontend_linux.go",
+      "blob": "ac21fc8cf2b512da10c45c6930adad9d6cad401c",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_frontend_live.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_frontend_live.py",
+      "blob": "ebced58586f6ce0038bfc87f19f9cfcaee98f1f3",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_qmp_linux_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_qmp_linux_test.go",
+      "blob": "ad6af322573ce848738b1a69f54c676db3988f1e",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_qmp_linux.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/protected_qmp_linux.go",
+      "blob": "200c944a803878ba61d75d52c549bc371ce4914e",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/runtime.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/runtime.go",
+      "blob": "3d25cf485cb6bd1c46a0cea05394fe69d5edd3ae",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/scoped.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/scoped.go",
+      "blob": "03ad5cae17af365fd310ba4fe2220fa756cb1d5d",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/status.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/actuator/status.go",
+      "blob": "edc6962a63ab5561b0fa22315c0c50b3f7c4e142",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/controlcli/main.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/controlcli/main.go",
+      "blob": "56a3091d71547464ede646acc85d39bbb7f0f220",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/cmd/frontend/main.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/cmd/frontend/main.go",
+      "blob": "1856409fc09ab6701a01b2c2a2f04fedcf2d3ae4",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/Dockerfile",
+      "destination_path": "experiments/usb-fabric-r26/integrated/Dockerfile",
+      "blob": "5ae166501c30030fb80a57792b0b8b29ba9493ae",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/go.mod",
+      "destination_path": "experiments/usb-fabric-r26/integrated/go.mod",
+      "blob": "f653914d65c8fecf02f7e7a727779306124f51f5",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/heldledger/ledger_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/heldledger/ledger_test.go",
+      "blob": "1bc71071b24099c09f18f99b98e6406d5f6552e8",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/heldledger/ledger.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/heldledger/ledger.go",
+      "blob": "b9bcdcb22517cb8e80dc25140bfaf187eea59795",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/heldledger/verified_release_test.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/heldledger/verified_release_test.go",
+      "blob": "6aa68bf9313e7fdc8ce9b8780fd14ee38d579568",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/heldledger/verified_release.go",
+      "destination_path": "experiments/usb-fabric-r26/integrated/heldledger/verified_release.go",
+      "blob": "ae9b48ec6b83b4b9fd47fd220cc6650efdfb0738",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l10_lockfile_inode_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l10_lockfile_inode_oracle.py",
+      "blob": "0835ccdfaf1d6a8658b6b70a020623d12a018010",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l10_lockfile_inode_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l10_lockfile_inode_verify.sh",
+      "blob": "34b0079bd6c635c7e37189b5a643fc1bd579b253",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l5_missing_journal_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l5_missing_journal_oracle.py",
+      "blob": "1008a1c836a0030cd5e2649101d41517592a98e9",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l5_missing_journal_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l5_missing_journal_verify.sh",
+      "blob": "aa524aa07258847e14ded0997796dd2931d5d304",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l6_dual_qmp_owner_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l6_dual_qmp_owner_oracle.py",
+      "blob": "f9448367fade8877d454295bed7decd5334c88bb",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l6_dual_qmp_owner_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l6_dual_qmp_owner_verify.sh",
+      "blob": "a544e022b1a3305782002d84f9b6405746b6340d",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l7_alternate_journal_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l7_alternate_journal_oracle.py",
+      "blob": "fafc3ef9bb3abcf8ab245ff99d37a64cb55d54e3",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l7_alternate_journal_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l7_alternate_journal_verify.sh",
+      "blob": "62132a83d5533993fae685d7d6d71d09ca3fe8d2",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l9b_guest_readmission_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l9b_guest_readmission_oracle.py",
+      "blob": "f4033ca2488ac999b8a2ff9c4c9e8301d6c8eb15",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l9b_guest_readmission_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l9b_guest_readmission_verify.sh",
+      "blob": "a2bca662c585ac78c36bcb8305f052c634f49893",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l9c_scoped_release_detach_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l9c_scoped_release_detach_oracle.py",
+      "blob": "8b3c0ebfcfc2c0a6a5cce8a6745397a0c199d879",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/l9c_scoped_release_detach_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/l9c_scoped_release_detach_verify.sh",
+      "blob": "45d84fb1d9c71a14d739674890e6c9cde09d484a",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/orchestrator.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/orchestrator.py",
+      "blob": "3574996598cebfbcf0efbe2ec96d2670a858a9db",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/protected_signed_hid_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/protected_signed_hid_oracle.py",
+      "blob": "ae0acb6857e8b0d3093c54663e8954ddb38950da",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh",
+      "blob": "81924180450f6233c9ee11a9c1f1f077d03af777",
+      "mode": "100755"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27_broker_cli_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27_broker_cli_oracle.py",
+      "blob": "327dec879e8bfca9895c93d4f42b29333c98c37f",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27_broker_cli_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27_broker_cli_verify.sh",
+      "blob": "c6d6bad982104f77e4e05a234e7b9629f6617bcb",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27c_signed_guest_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27c_signed_guest_oracle.py",
+      "blob": "0525f9ddc060ca0c4fe992a6f84daf7f317ce577",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27c_signed_guest_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27c_signed_guest_verify.sh",
+      "blob": "c557e31fb671fe96b90e24137c2fb15cacb4b870",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27d_readonly_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27d_readonly_oracle.py",
+      "blob": "90eb20f218acb98292a267a647dbc4be324b54b1",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27d_readonly_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27d_readonly_verify.sh",
+      "blob": "b26f81c9596f348e0b9bf23aacc6b827a26de33f",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27e_joint_signed_cli_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27e_joint_signed_cli_oracle.py",
+      "blob": "e17ec746b3d32843bd7d3ebe9bdb2acfe81a47d3",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27e_joint_signed_cli_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27e_joint_signed_cli_verify.sh",
+      "blob": "1de5884321d1a49799b514f7d22c5ae10915ad72",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27f_wrong_pinned_key_oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27f_wrong_pinned_key_oracle.py",
+      "blob": "6f04a9ad7a9b31066bfea9ca0438ec829759dbfe",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/r27f_wrong_pinned_key_verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/r27f_wrong_pinned_key_verify.sh",
+      "blob": "9e0b8ca551797348bb659e8e38d8b28b15fa3191",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/integrated/verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/integrated/verify.sh",
+      "blob": "99acbbedea8048b285c75359583cc9f004947152",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/evidence/bridge_test.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/evidence/bridge_test.go",
+      "blob": "c6975420a38b8c14ef2b3345b26f96ca4b21be20",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/evidence/bridge.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/evidence/bridge.go",
+      "blob": "7bce3acbd7742811a2544f84079fd3db9856f019",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/gate_test.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/gate_test.go",
+      "blob": "8ea10fedadb6f43e48f90fd6613d26ee6b27161c",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/gate.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/gate.go",
+      "blob": "4a80e0a664270a4d0b7b206758136dee8e17bb5d",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/go.mod",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/go.mod",
+      "blob": "8bfa18493b8d94677ee3fa5724dfbabc3d3530a5",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/guest/main.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/guest/main.go",
+      "blob": "0a8a1b1d102154f58355656b0394c1d664832545",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/host/main.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/host/main.go",
+      "blob": "dfd13a9e36bbbb5309c7977e8182459d3662ee30",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/provision/main.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/provision/main.go",
+      "blob": "cd603359b60ce7e9977cd6883e4ff58ac9183e4a",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/runtimeguest/main.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/cmd/runtimeguest/main.go",
+      "blob": "7a4882679813ce58b6296eb734a35ca8b04e83fe",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/Dockerfile",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/Dockerfile",
+      "blob": "a3dbdef163be8a9caedd8f02930378701d48db1f",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/init.sh",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/init.sh",
+      "blob": "7c8aabf835bc59060d2b2d242021db080d6d6c6c",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/oracle.py",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/oracle.py",
+      "blob": "be8a23a5cedfd046f27e846c3e91a2bc2126c692",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/protocol.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/protocol.go",
+      "blob": "d55a61b643447a7c495cdaf88a2953328cfbd4ee",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/guestwire/verify.sh",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/guestwire/verify.sh",
+      "blob": "84108e41c7a4d28447a14deabbc0f9bc490f66da",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/runtimeproof/proof_test.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/runtimeproof/proof_test.go",
+      "blob": "64aad94675109dcb0343ac19a52014ba531c00e3",
+      "mode": "100644"
+    },
+    {
+      "origin_path": "experiments/usb-fabric-r26/releasegate/runtimeproof/proof.go",
+      "destination_path": "experiments/usb-fabric-r26/releasegate/runtimeproof/proof.go",
+      "blob": "4153700fcabcfbfc825619c68c1b37d3bc2e4d98",
+      "mode": "100644"
+    }
+  ],
+  "qualification": "PENDING_DESTINATION_RUN"
+}
