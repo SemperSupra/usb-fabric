@@ -1,0 +1,34 @@
+name: USB native protected real signed guest HID
+on:
+  push:
+    branches: [feature/issue-3-adopt-fabric]
+permissions:
+  contents: read
+concurrency:
+  group: usb-native-owner-order-20261126
+  cancel-in-progress: false
+jobs:
+  protected-guest-hid:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Source pin and original package checks
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: 'off'
+          GOSUMDB: 'off'
+          GOWORK: 'off'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = 81ee755d91c3ef26e9db7ef0e5e019e4e42d18ab
+          cd experiments/usb-fabric-r26/integrated/
+          go test -race -count=1 -timeout=120s ./...
+          go vet ./...
+          python3 -B -c 'import ast; ast.parse(open("protected_signed_hid_oracle.py").read())'
+      - name: Same-run protected service, Linux guest HID, release and detach
+        run: bash experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh
