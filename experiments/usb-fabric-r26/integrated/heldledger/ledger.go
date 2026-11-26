@@ -66,22 +66,9 @@ func (s Store) Read()(State,error){
 // readDecodedState owns the original bounded, no-follow and strict JSON
 // read. Individual version-specific validators must decide eligibility.
 func (s Store) readDecodedState()(State,error){
- if s.Path==""{return State{},ErrInvalid}
- // A symlink (including a dangling link) is not an absent journal.
- // Fail closed before following a path that could impersonate clean state.
- pathInfo,e:=os.Lstat(s.Path)
- if errors.Is(e,os.ErrNotExist){return State{Version:Version},nil}
+ raw,e:=s.readRawRecord()
  if e!=nil{return State{},e}
- if !pathInfo.Mode().IsRegular(){return State{},ErrInvalid}
- f,e:=openJournalNoFollow(s.Path)
- if errors.Is(e,os.ErrNotExist){return State{},ErrInvalid}
- if e!=nil{return State{},e}
- defer f.Close()
- info,e:=f.Stat();if e!=nil{return State{},e}
- if !info.Mode().IsRegular() || !os.SameFile(pathInfo,info) ||
-  info.Size()>maxBytes || info.Size()<2{return State{},ErrInvalid}
- raw,e:=io.ReadAll(io.LimitReader(f,maxBytes+1));if e!=nil{return State{},e}
- if len(raw)>maxBytes{return State{},ErrInvalid}
+ if raw==nil{return State{Version:Version},nil}
  // Reject duplicate top-level JSON keys BEFORE decoding into State.
  // encoding/json otherwise accepts last-key-wins values: a damaged HELD
  // journal could be interpreted as clean. Case aliases are duplicates too.
@@ -93,6 +80,28 @@ func (s Store) readDecodedState()(State,error){
  var extra any
  if e=decoder.Decode(&extra);!errors.Is(e,io.EOF){return State{},ErrInvalid}
  return state,nil
+}
+
+// readRawRecord is the single bounded no-follow journal byte reader shared
+// by typed decoders. nil bytes mean absence, never authorization.
+func (s Store) readRawRecord()([]byte,error){
+ if s.Path==""{return nil,ErrInvalid}
+ // A symlink (including a dangling link) is not an absent journal.
+ // Fail closed before following a path that could impersonate clean state.
+ pathInfo,e:=os.Lstat(s.Path)
+ if errors.Is(e,os.ErrNotExist){return nil,nil}
+ if e!=nil{return nil,e}
+ if !pathInfo.Mode().IsRegular(){return nil,ErrInvalid}
+ f,e:=openJournalNoFollow(s.Path)
+ if errors.Is(e,os.ErrNotExist){return nil,ErrInvalid}
+ if e!=nil{return nil,e}
+ defer f.Close()
+ info,e:=f.Stat();if e!=nil{return nil,e}
+ if !info.Mode().IsRegular() || !os.SameFile(pathInfo,info) ||
+  info.Size()>maxBytes || info.Size()<2{return nil,ErrInvalid}
+ raw,e:=io.ReadAll(io.LimitReader(f,maxBytes+1));if e!=nil{return nil,e}
+ if len(raw)>maxBytes{return nil,ErrInvalid}
+ return raw,nil
 }
 
 func validateLegacyState(state State)(State,error){
@@ -165,6 +174,12 @@ func (s Store) Transition(expected uint64,held bool)(State,error){
  return next,nil
 }
 func (s Store) writeAtomic(state State)error{
+ return s.writeAtomicRecord(state)
+}
+
+// One atomic journal writer; distinct record formats do not create another
+// file or a parallel authority. The retained original owner serializes use.
+func (s Store) writeAtomicRecord(state any)error{
  dir:=filepath.Dir(s.Path)
  f,e:=os.CreateTemp(dir,".r26-heldledger-*")
  if e!=nil{return e}
@@ -173,7 +188,7 @@ func (s Store) writeAtomic(state State)error{
  if e=f.Chmod(0600);e!=nil{f.Close();return e}
  data,e:=json.Marshal(state);if e!=nil{f.Close();return e}
  data=append(data,'\n')
- if _,e=f.Write(data);e!=nil{f.Close();return e}
+ if n,err:=f.Write(data);err!=nil||n!=len(data){f.Close();if err!=nil{return err};return io.ErrShortWrite}
  if e=f.Sync();e!=nil{f.Close();return e}
  if e=f.Close();e!=nil{return e}
  if e=os.Rename(name,s.Path);e!=nil{return e}
