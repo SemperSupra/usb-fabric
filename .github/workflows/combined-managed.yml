@@ -1,0 +1,39 @@
+name: USB Fabric exact combined managed runtime qualification
+on:
+  pull_request:
+    branches: [integration/issue-3-source-convergence]
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: usb-fabric-issue3-combined-managed
+  cancel-in-progress: false
+jobs:
+  combined-managed:
+    if: ${{ github.event.pull_request.head.ref == 'test/issue-3-combined-managed' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.sha == 'dac830f9be31036848fcc343fa677db498036586' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 'dac830f9be31036848fcc343fa677db498036586'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact tree and historical source identity
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = 'dac830f9be31036848fcc343fa677db498036586'
+          python3 -B qualification/verify-source-convergence.py
+          python3 -B qualification/verify-three-kernel-adoption.py
+      - name: Original actual three-kernel USBIP qualification
+        run: |
+          set -Eeuo pipefail
+          docker version
+          GITHUB_SHA='dac830f9be31036848fcc343fa677db498036586' /usr/bin/time -v bash experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify-product.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: combined-three-kernel-qualification-not-release
+          path: ${{ runner.temp }}/r27-g-original-kernel-isolated-a-usbip.log
+          retention-days: 7
+          if-no-files-found: warn
