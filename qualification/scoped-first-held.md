@@ -1,0 +1,5 @@
+# Scoped v2 first-input HELD seal (not activation)
+
+The original retained owner now owns an in-memory copy of its exact successful scoped intent. All value copies share one session and one consumption state. SealFirstHeld consumes the intent before the write and commits sequence 3 HELD with scope, genesis nonce, operation and evidence hash preserved. Legacy APIs reject it; neither seal nor readback creates a Manager or permits input. A closed/reopened owner, replay, failed/ambiguous write or altered intent remains unavailable. No runtime code invokes this API.
+
+The model in this PR remains a requirements abstraction. Next: design actual same-owner activation and fence-loss supervision, prove retained-owner/Manager retirement order, and qualify real independent witness domains. No v1 downgrade or clear/release implementation. This is host-local source qualification only; lock namespace/UID, trusted parent and truthful witnesses remain deployment assumptions. See GitHub run receipt for source qualification status.
