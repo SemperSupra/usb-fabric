@@ -37,6 +37,16 @@ timeout 300s docker run --rm --network none --read-only --user 0:0 \
  --memory 2048m --memory-swap 2048m --cpus 2 --pids-limit 128 \
  --tmpfs /tmp:rw,exec,nosuid,nodev,size=128m,mode=1777 \
  --entrypoint python3 "$image" -B /guest/protected_signed_hid_oracle.py
+timeout 300s docker run --rm --network none --read-only --user 0:0 \
+ --cap-drop ALL --cap-add CHOWN --cap-add DAC_OVERRIDE --cap-add SETUID --cap-add SETGID --cap-add KILL --security-opt no-new-privileges \
+ --memory 2048m --memory-swap 2048m --cpus 2 --pids-limit 128 \
+ --tmpfs /tmp:rw,exec,nosuid,nodev,size=128m,mode=1777 \
+ --entrypoint python3 "$image" -B /guest/protected_signed_hid_oracle.py --crash-recovery
+timeout 300s docker run --rm --network none --read-only --user 0:0 \
+ --cap-drop ALL --cap-add CHOWN --cap-add DAC_OVERRIDE --cap-add SETUID --cap-add SETGID --cap-add KILL --security-opt no-new-privileges \
+ --memory 2048m --memory-swap 2048m --cpus 2 --pids-limit 128 \
+ --tmpfs /tmp:rw,exec,nosuid,nodev,size=128m,mode=1777 \
+ --entrypoint python3 "$image" -B /guest/protected_signed_hid_oracle.py --wrong-instance
 [[ "$(docker volume ls -q | LC_ALL=C sort)" == "$volumes_before" ]] || { echo PROTECTED_NATIVE_HID_VOLUME_TAINT=RED;exit 13; }
 [[ "$(snapshot)" == "$local_before" ]] || { echo PROTECTED_NATIVE_HID_LOCAL_TAINT=RED;exit 14; }
 [[ "$(git status --porcelain --untracked-files=all)" == "$before" ]] || { echo PROTECTED_NATIVE_HID_SOURCE_TAINT=RED;exit 15; }

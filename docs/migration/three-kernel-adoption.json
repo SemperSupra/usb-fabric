@@ -1,0 +1,226 @@
+{
+  "schema": "usb-fabric/three-kernel-adoption/v1",
+  "source_repository": "SemperSupra/agent-dispatch",
+  "original_runtime_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+  "original_run": 44880869422,
+  "product_core_commit": "79633411bc7679c00d119dc72da90e725165fb2a",
+  "files": [
+    {
+      "destination_path": "experiments/pi-usb-fabric-r06/transport/hid_evdev_observer.c",
+      "origin_path": "experiments/pi-usb-fabric-r06/transport/hid_evdev_observer.c",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "d797a897dbdc6172d7efb228dd2ce3fa8a92a9e0",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r22/qmp-usbip-compose/usbip-guest-signing/consumer-a.init",
+      "origin_path": "experiments/pi-usb-fabric-r22/qmp-usbip-compose/usbip-guest-signing/consumer-a.init",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "db27f775a4789d981a096109dfc4bf040acebd49",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r22/qmp-usbip-compose/usbip-guest-signing/run.sh",
+      "origin_path": "experiments/pi-usb-fabric-r22/qmp-usbip-compose/usbip-guest-signing/run.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "a375621d0bdd6f34cb695a432bf8c7b61d955fb2",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/Dockerfile",
+      "origin_path": "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/Dockerfile",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "03048c5a483fde4a6468d597e0578e0aee666322",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/qmp_observer.py",
+      "origin_path": "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/qmp_observer.py",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "e5d6a98c95e9eee8f19e32f36f326a77c17ac287",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/run.sh",
+      "origin_path": "experiments/pi-usb-fabric-r25/qmp-usbip-vm-observer/run.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "5b0379918199902aa86354583d87b19c3d806073",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r26/qmp-vhci-domain/Dockerfile",
+      "origin_path": "experiments/pi-usb-fabric-r26/qmp-vhci-domain/Dockerfile",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "88e3ac7cf5d06f18cea0c908a1fde8e9a1eb3926",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r26/qmp-vhci-domain/qmp_pci.py",
+      "origin_path": "experiments/pi-usb-fabric-r26/qmp-vhci-domain/qmp_pci.py",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "f388da7270e855cc3a8f71fb47fead52b740f779",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r26/qmp-vhci-domain/run.sh",
+      "origin_path": "experiments/pi-usb-fabric-r26/qmp-vhci-domain/run.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "6709d5b568f2ddc5a3156f95dabe27a91e59a7fa",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile",
+      "origin_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "a5a135b86d2b09090d15ec632103c81141da90be",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile.base",
+      "origin_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile.base",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "51e864776bb0050dd834513d123faaf6dae2e8a3",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/broker.go",
+      "origin_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/broker.go",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "a4794bb79fcb86bb69317801da6ae261070a8941",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/qualify.sh",
+      "origin_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/qualify.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "d1942c8e26a3f44ce873aeb23031b9e172001425",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/run.sh",
+      "origin_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/run.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "4457c80cad43dd2b229eaa99a1f1efd7accbdd67",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify.sh",
+      "origin_path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "846810770ff61000bc36d60a9504ae366341b153",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/uart-ack/provider.init",
+      "origin_path": "experiments/pi-usb-fabric-r27/uart-ack/provider.init",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "3087140ab52c6f2e8d3aaf63754df4a21c4ca55c",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/udc-hostpin-composite/Dockerfile",
+      "origin_path": "experiments/pi-usb-fabric-r27/udc-hostpin-composite/Dockerfile",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "c6cbe7184b201aa2c4d0bcb0e7bc98306e39839c",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/udc-hostpin-composite/run.sh",
+      "origin_path": "experiments/pi-usb-fabric-r27/udc-hostpin-composite/run.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "a479809cd748af353c70aa864a192fc8824308b3",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/usbip-hostpin/Dockerfile",
+      "origin_path": "experiments/pi-usb-fabric-r27/usbip-hostpin/Dockerfile",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "c96ef282bb0d41cedae1238f1d2a75c82a8dbad1",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "experiments/pi-usb-fabric-r27/usbip-hostpin/run.sh",
+      "origin_path": "experiments/pi-usb-fabric-r27/usbip-hostpin/run.sh",
+      "origin_commit": "fa7ca7a17b4a51af3ce47dc10980244938d32a2a",
+      "blob": "f9feca7c5d5c6fdf4ccdf87a7aa0766e588e494b",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/pin/experiments/pi-usb-fabric-r26/host-pin/guest-main.go",
+      "origin_path": "experiments/pi-usb-fabric-r26/host-pin/guest-main.go",
+      "origin_commit": "1a3b17e664eb6fe1127575a509492ef5baa67802",
+      "blob": "e6fdde6f051674ef75bd3c0dab6d13e3b97beaf0",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/pin/experiments/pi-usb-fabric-r26/host-pin/keygen.go",
+      "origin_path": "experiments/pi-usb-fabric-r26/host-pin/keygen.go",
+      "origin_commit": "1a3b17e664eb6fe1127575a509492ef5baa67802",
+      "blob": "946293289b5d6ac29b4c6c4a4d4f2e279235b242",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/cmd/attack/main.go",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/cmd/attack/main.go",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "6558fe09777442c8b3198012633a9fb4c678f6b9",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/cmd/verify/main.go",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/cmd/verify/main.go",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "0e2cbd1f389d7a19a0595e7d82284b383808570f",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/go.mod",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/go.mod",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "1f7c8e929b823c4448c88021e51e066075db73f4",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/guest-signing-main.go",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/guest-signing-main.go",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "ab848a242c4fe48074920bd8e405b0f2419024d3",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/host-ed25519-main.go",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/host-ed25519-main.go",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "55b9ec03a050ca853a46e0771c222aaef9c287a9",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/signer.go",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/signer.go",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "304591665c915a1c3e00de7b1ac7291e0ccea7cc",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/r22/experiments/pi-usb-fabric-r22/guest-ed25519/signer_test.go",
+      "origin_path": "experiments/pi-usb-fabric-r22/guest-ed25519/signer_test.go",
+      "origin_commit": "dc96c80b78540bc5b05ad70179c7afff647c3cbc",
+      "blob": "aca7d4180dd3434a6d0d5e8185b75c814395c7e4",
+      "mode": "100644"
+    },
+    {
+      "destination_path": "qualification/managed-inputs/udc/experiments/pi-usb-fabric-r27/udc-admission/consumer-b.init",
+      "origin_path": "experiments/pi-usb-fabric-r27/udc-admission/consumer-b.init",
+      "origin_commit": "740d1eb115fe1b62364118ee07e5867f0625683b",
+      "blob": "945e1e2e2bb4ff591f87fe914c618aeec3b1af15",
+      "mode": "100644"
+    }
+  ],
+  "qualification": "PENDING_DESTINATION_RUN",
+  "nonclaims": [
+    "initial A uses legacy blue.New",
+    "independent protected production sensors not qualified",
+    "v2 scoped first admission and G4 not qualified",
+    "no physical hardware or release"
+  ]
+}

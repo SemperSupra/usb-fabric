@@ -13,6 +13,7 @@ import (
  "io"
  "os"
  "path/filepath"
+ "strings"
  "time"
 
  releasegate "example.org/usb-fabric-r26-releasegate"
@@ -32,7 +33,15 @@ type binding struct{
 }
 func run()error{
  if len(os.Args)!=3{return errors.New("need evdev node + virtio port")}
- privateBytes,err:=os.ReadFile("/etc/r27-guest-private-key")
+ // Test-only crash witness: real evdev UP is observed on serial even when
+ // the original signed receipt connection disappeared with the controller.
+ // This serial marker is deliberately NOT a signed release authorization.
+ cmdline,err:=os.ReadFile("/proc/cmdline");if err!=nil{return err}
+ crashWitness:=strings.Contains(" "+strings.TrimSpace(string(cmdline))+" "," r27_crash_witness=1 ")
+ instanceMode:=strings.Contains(" "+strings.TrimSpace(string(cmdline))+" "," r27_instance_key=1 ")
+ keyPath:="/etc/r27-guest-private-key"
+ if instanceMode{keyPath="/etc/r27-instance-private-key"}
+ privateBytes,err:=os.ReadFile(keyPath)
  if err!=nil{return err}
  if len(privateBytes)!=ed25519.PrivateKeySize{return errors.New("provisioned private key has wrong length")}
  private:=ed25519.PrivateKey(privateBytes)
@@ -54,8 +63,19 @@ func run()error{
    b.Scope.GuestEpoch=="" || b.Scope.LeaseEpoch=="" ||
    b.Scope.Generation==0 || b.Scope.ReleaseSequence==0 ||
    b.Challenge==([32]byte{}){return errors.New("invalid host binding")}
+  if instanceMode && b.Scope.GuestEpoch!=runtimeproof.InstanceEpoch(private.Public().(ed25519.PublicKey)){
+   fmt.Println("PROTECTED_GUEST_FOREIGN_INSTANCE_BINDING=DENIED")
+   return errors.New("guest instance binding mismatch")
+  }
   scope=b.Scope
   challenge=b.Challenge
+  if instanceMode{
+   enrolled,err:=runtimeproof.Sign(private,runtimeproof.Event{
+    Scope:scope,Challenge:challenge,Source:"guest.enrollment",KeyCode:"instance",EventSequence:1,
+   })
+   if err!=nil{return err}
+   if err=enc.Encode(enrolled);err!=nil{return err}
+  }
   fmt.Println("R27C_GUEST_HOST_CHALLENGE_BOUND=PASS")
   return nil
  }
@@ -74,6 +94,12 @@ func run()error{
   down:=raw.Value==1
   if down && seenDown{continue}
   if !down && (raw.Value!=0||!seenDown){continue}
+  if !down && crashWitness{
+   fmt.Println("R27C_GUEST_CRASH_EVDEV_UP_UNATTESTED=OBSERVED")
+   // Keep the guest alive while the independent recovery attempt concludes.
+   time.Sleep(5*time.Second)
+   return nil
+  }
   seq:=uint64(10+2*cycle)
   if !down{seq=uint64(11+2*cycle)}
   event,err:=runtimeproof.Sign(private,runtimeproof.Event{

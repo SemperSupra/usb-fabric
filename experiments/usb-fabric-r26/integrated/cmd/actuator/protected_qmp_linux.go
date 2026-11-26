@@ -19,6 +19,14 @@ import (
 // trusted. This does NOT revoke an intentionally transferred descriptor,
 // authenticate a guest or prove a distributed owner.
 func connectProtectedQMP(path string, expectedPID int)(*qmp,error){
+ conn,err:=connectProtectedUnixPeer(path,expectedPID)
+ if err!=nil{return nil,err}
+ return &qmp{conn:conn,enc:json.NewEncoder(conn),dec:json.NewDecoder(conn)},nil
+}
+
+// Receipt and QMP sockets in protected mode must terminate in the same
+// controller-selected QEMU PID and trusted service UID.
+func connectProtectedUnixPeer(path string, expectedPID int)(net.Conn,error){
  if expectedPID<=1 || uint64(expectedPID)>uint64(1<<31-1) || !filepath.IsAbs(path) || filepath.Clean(path)!=path {
   return nil,errors.New("protected QMP: invalid path or controller PID")
  }
@@ -51,5 +59,5 @@ func connectProtectedQMP(path string, expectedPID int)(*qmp,error){
  // No protocol bytes are sent here. The caller must retain the existing
  // claimAndNegotiateQMP owner fence before any QMP capability is negotiated.
  keep=true
- return &qmp{conn:conn,enc:json.NewEncoder(conn),dec:json.NewDecoder(conn)},nil
+ return conn,nil
 }
