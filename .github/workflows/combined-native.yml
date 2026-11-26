@@ -1,0 +1,31 @@
+name: USB Fabric exact combined native runtime qualification
+on:
+  pull_request:
+    branches: [integration/issue-3-source-convergence]
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: usb-fabric-issue3-combined-native
+  cancel-in-progress: false
+jobs:
+  combined-native:
+    if: ${{ github.event.pull_request.head.ref == 'test/issue-3-combined-native' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.sha == 'dac830f9be31036848fcc343fa677db498036586' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 'dac830f9be31036848fcc343fa677db498036586'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact tree and source identity
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = 'dac830f9be31036848fcc343fa677db498036586'
+          python3 -B qualification/verify-source-convergence.py
+      - name: Original native real guest qualification
+        run: |
+          set -Eeuo pipefail
+          docker version
+          GITHUB_SHA='dac830f9be31036848fcc343fa677db498036586' /usr/bin/time -v bash experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh
