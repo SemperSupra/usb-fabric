@@ -1,0 +1,34 @@
+{
+  "schema": "usb-fabric/native-recovery-observation/v1",
+  "base": "dac830f9be31036848fcc343fa677db498036586",
+  "source_blobs": {
+    "experiments/usb-fabric-r26/releasegate/runtimeproof/recovery.go": "281a0c8bdefea516ccf360e471e5a5e471410787",
+    "experiments/usb-fabric-r26/releasegate/runtimeproof/recovery_test.go": "e95ed6cb5cf4514a7597cda25c663b1a15833faf"
+  },
+  "dependency_blobs": {
+    "experiments/usb-fabric-r26/releasegate/go.mod": "8bfa18493b8d94677ee3fa5724dfbabc3d3530a5",
+    "experiments/usb-fabric-r26/releasegate/gate.go": "4a80e0a664270a4d0b7b206758136dee8e17bb5d",
+    "experiments/usb-fabric-r26/releasegate/runtimeproof/proof.go": "7460d4f7d7a2ebe58ed25f6daafaa644cdc7de49"
+  },
+  "first_failure": "Manual gate.go transfer blob mismatch before executing; corrected with exact base64 readback, all three dependencies verified before test.",
+  "scope": "targeted exact dependency subset, no full module or actual QEMU recovery",
+  "qualification": {
+    "go": "1.23.2 linux/amd64",
+    "commands": [
+      "GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOWORK=off go test -race -count=10 -timeout=60s ./runtimeproof",
+      "go vet ./runtimeproof"
+    ],
+    "wall_seconds": 8.97,
+    "user_cpu_seconds": 16.58,
+    "system_cpu_seconds": 3.76,
+    "max_rss_kib": 192008,
+    "result": "PASS",
+    "exit": 0
+  },
+  "limits": [
+    "No journal/QMP/guest sensor wiring, recovery readmission or grant",
+    "Independent durable launch/old lease binding and actual neutral sensor not yet implemented",
+    "No production attestation or G4",
+    "Full module regression NOT_RUN"
+  ]
+}
