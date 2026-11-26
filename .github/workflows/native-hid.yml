@@ -1,7 +1,7 @@
-name: USB Fabric protected HID and controller crash
+name: USB Fabric protected per-launch guest enrollment
 on:
   push:
-    branches: [test/issue-5-controller-crash]
+    branches: [feature/issue-7-guest-enrollment]
 permissions:
   contents: read
 concurrency:
@@ -25,10 +25,11 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 1957a30e5ebc968a1e6de4b0fad1c66549f0a3c9
+          test "$(git rev-parse HEAD^)" = cc11ffda1cb7007f9d8301773957e46005d25594
+          (cd experiments/usb-fabric-r26/releasegate && go test -race -count=3 -timeout=120s ./... && go vet ./... && go test -race -count=10 -v ./runtimeproof -run '^TestProtectedInstanceEnrollment$')
           cd experiments/usb-fabric-r26/integrated/
           go test -race -count=1 -timeout=120s ./...
           go vet ./...
           python3 -B -c 'import ast; ast.parse(open("protected_signed_hid_oracle.py").read())'
-      - name: Same-run protected service, Linux guest HID, release and detach
+      - name: Real per-launch enrolled guest HID, crash and foreign-instance rejection
         run: bash experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh

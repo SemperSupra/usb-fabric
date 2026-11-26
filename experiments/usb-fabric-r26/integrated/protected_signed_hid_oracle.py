@@ -7,6 +7,8 @@ the synthetic initramfs. This is NOT measured boot or production attestation.
 No physical devices, network API, host device access, passwords or secrets.
 """
 import hashlib
+import gzip
+import shutil
 import json
 import os
 from pathlib import Path
@@ -170,9 +172,39 @@ print("PROTECTED_CRASH_OLD_AND_NEW_FRONTEND_UNAVAILABLE=PASS")
     print("PROTECTED_CONTROLLER_CRASH_RECOVERY_QUARANTINE=PASS",flush=True)
     print("RECOVERY_SIGNED_REENROLLMENT_AND_POWER_LOSS=NOT_TESTED",flush=True)
 
+def cpio_entry(name,data,mode,ino):
+    n=name.encode()+b"\0"
+    fields=(ino,mode,0,0,1,0,len(data),0,0,0,0,len(n),0)
+    b=b"070701"+b"".join(("%08x"%x).encode() for x in fields)+n
+    b+=b"\0"*((-len(b))%4)
+    b+=data
+    return b+b"\0"*((-len(b))%4)
+
+def provision_instance(root,wrong):
+    secret=root/"instance.key"; pub=root/"instance.pub"
+    result=subprocess.run(["/guest/r27-provision",str(secret),str(pub)],capture_output=True,timeout=10,**OWNER)
+    if result.returncode:raise RuntimeError("instance key provisioning failed")
+    key=secret.read_bytes()
+    if len(key)!=64 or len(pub.read_bytes())!=32:raise RuntimeError("bad instance key size")
+    if pub.read_bytes()==Path("/guest/r27-guest-public").read_bytes():raise RuntimeError("builder key reused")
+    archive=cpio_entry("etc/r27-instance-private-key",key,0o100400,1)+cpio_entry("TRAILER!!!",b"",0,2)
+    initrd=root/"instance-initrd.gz"
+    with open("/guest/initrd.gz","rb") as source,open(initrd,"xb") as target:
+        shutil.copyfileobj(source,target)
+        target.write(gzip.compress(archive,mtime=0))
+    initrd.chmod(0o400);os.chown(initrd,65532,65532)
+    secret.unlink()
+    if wrong:
+        pin=root/"stale.pub";pin.write_bytes(Path("/guest/r27-guest-public").read_bytes())
+        pin.chmod(0o400);os.chown(pin,65532,65532)
+    else:pin=pub
+    print("PROTECTED_GUEST_PER_LAUNCH_KEY_PROVISIONED=PASS",flush=True)
+    return initrd,pin
+
 def main():
     crash=len(sys.argv)==2 and sys.argv[1]=="--crash-recovery"
-    if len(sys.argv)>1 and not crash:raise RuntimeError("invalid oracle mode")
+    wrong=len(sys.argv)==2 and sys.argv[1]=="--wrong-instance"
+    if len(sys.argv)>1 and not (crash or wrong):raise RuntimeError("invalid oracle mode")
     with tempfile.TemporaryDirectory(prefix="r27c-ed25519-",dir="/tmp") as d:
         boundary=Path(d);boundary.chmod(0o711)
         root=boundary/"private";root.mkdir(mode=0o700)
@@ -191,13 +223,14 @@ def main():
         qemu=actuator=first=second=third=None
         qlogs=alogs=None
         try:
+            initrd,pin=provision_instance(root,wrong)
             qemu=subprocess.Popen([
                 "qemu-system-x86_64","-machine","q35","-accel","tcg",
                 "-cpu","qemu64","-m","1024M","-smp","1","-S",
                 "-nodefaults","-display","none","-monitor","none",
                 "-serial","stdio","-net","none","-no-reboot",
-                "-kernel","/guest/kernel","-initrd","/guest/initrd.gz",
-                "-append","console=ttyS0 rdinit=/init loglevel=7 panic=-1 r27_signed=1"+(" r27_crash_witness=1" if crash else ""),
+                "-kernel","/guest/kernel","-initrd",str(initrd),
+                "-append","console=ttyS0 rdinit=/init loglevel=7 panic=-1 r27_signed=1 r27_instance_key=1"+(" r27_crash_witness=1" if crash else ""),
                 "-device","qemu-xhci,id=xhci0",
                 "-device","virtio-serial-pci,id=vs0",
                 "-chardev","socket,id=receipt,path="+receipt+",server=on,wait=off",
@@ -213,7 +246,7 @@ def main():
                 "/guest/r26-actuator","--qmp",qmp,"--qmp-protected-pid",str(qemu.pid),"--protected-frontend","--socket",api,
                 "--media",str(media),"--capture",str(capture),
                 "--journal",str(journal),"--receipt",receipt,"--scoped-receipts",
-                "--runtime-guest-public","/guest/r27-guest-public",
+                "--runtime-guest-public",str(pin),
                 "--authorized-peer-uid","65534",
                 "--permitted-operations","status,ports,reserve,attach,start,input,detach",
             ],stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,
@@ -246,9 +279,16 @@ sys.exit(1)
             expect(request(first,dict(base,op="attach")),True,"R26_L9C_GUEST_USB_ATTACHED")
             expect(request(first,dict(base,op="start")),True,"R26_L9C_GUEST_BOOTED_BY_ACTUATOR")
             qlogs.wait("R27C_REAL_LINUX_ED25519_EVDEV_READY=PASS")
+            if wrong:
+                qlogs.wait("PROTECTED_GUEST_FOREIGN_INSTANCE_BINDING=DENIED",25)
+                expect(request(first,dict(base,op="input",command="key-a-down")),False,"PROTECTED_STALE_INSTANCE_PRE_INPUT_DENIED")
+                if journal.exists():raise RuntimeError("denied input wrote HELD")
+                print("PROTECTED_STALE_INSTANCE_NO_INPUT_EFFECT_OR_JOURNAL=PASS",flush=True)
+                return
             qlogs.wait("R27C_GUEST_HOST_CHALLENGE_BOUND=PASS")
             alogs.wait("R27C_HOST_BUILDER_GUEST_PUBLIC_KEY_PINNED=PASS")
             alogs.wait("R27C_HOST_FRESH_ED25519_SCOPE_BOUND=PASS generation="+str(lease["generation"])+" release=1")
+            alogs.wait("PROTECTED_GUEST_FRESH_LEASE_ENROLLMENT_VERIFIED=PASS generation="+str(lease["generation"]))
             expect(request(first,dict(base,op="input",command="key-a-down")),
                    True,"R26_L9C_FIRST_HOST_QMP_KEY_DOWN")
             alogs.wait("R27C_REAL_ED25519_GUEST_DOWN_VERIFIED=PASS generation="+str(lease["generation"]))
@@ -292,6 +332,7 @@ sys.exit(1)
             alogs.wait("R27C_HOST_FRESH_ED25519_SCOPE_BOUND=PASS generation="+str(fresh["generation"])+" release=3")
             qlogs.wait("R27C_GUEST_SIGNED_PRIOR_CHALLENGE_REPLAY_SENT=PASS")
             alogs.wait("R27C_OLD_SIGNED_GUEST_SCOPE_REPLAY_REJECTED=PASS")
+            alogs.wait("PROTECTED_GUEST_FRESH_LEASE_ENROLLMENT_VERIFIED=PASS generation="+str(fresh["generation"]))
             expect(request(second,dict(new,op="input",command="key-a-down")),
                    True,"R26_L9C_SECOND_HOST_KEY_DOWN")
             qlogs.wait("R27C_REAL_SIGNED_GUEST_DOWN=PASS cycle=2",25)
@@ -332,7 +373,7 @@ sys.exit(1)
             if not capture.exists() or capture.stat().st_size<=24:
                 raise RuntimeError("real QEMU USB pcap missing")
             print("R26_L9C_ACTUAL_QEMU_USB_PCAP=PASS bytes="+str(capture.stat().st_size),flush=True)
-            public=Path("/guest/r27-guest-public")
+            public=pin
             if not public.is_file() or len(public.read_bytes())!=32:
                 raise RuntimeError("host did not independently pin exact 32-byte guest builder public key")
             print("R27C_HOST_PINNED_PUBLIC_KEY_STAGED_OUT_OF_BAND=PASS",flush=True)

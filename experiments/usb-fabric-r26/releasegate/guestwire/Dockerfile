@@ -49,6 +49,7 @@ COPY --from=kernel-builder /out/kernel /guest/kernel
 COPY --from=kernel-builder /out/initrd.gz /guest/initrd.gz
 COPY --from=go-builder /out/hostbridge /guest/r26-hostbridge
 COPY --from=go-builder /out/r27-guest-public /guest/r27-guest-public
+COPY --from=go-builder /out/r27-provision /guest/r27-provision
 COPY experiments/usb-fabric-r26/releasegate/guestwire/oracle.py /guest/oracle.py
 USER 65532:65532
 ENTRYPOINT ["python3","-B","/guest/oracle.py"]

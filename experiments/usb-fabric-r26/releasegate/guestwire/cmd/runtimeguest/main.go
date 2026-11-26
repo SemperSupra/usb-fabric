@@ -38,7 +38,10 @@ func run()error{
  // This serial marker is deliberately NOT a signed release authorization.
  cmdline,err:=os.ReadFile("/proc/cmdline");if err!=nil{return err}
  crashWitness:=strings.Contains(" "+strings.TrimSpace(string(cmdline))+" "," r27_crash_witness=1 ")
- privateBytes,err:=os.ReadFile("/etc/r27-guest-private-key")
+ instanceMode:=strings.Contains(" "+strings.TrimSpace(string(cmdline))+" "," r27_instance_key=1 ")
+ keyPath:="/etc/r27-guest-private-key"
+ if instanceMode{keyPath="/etc/r27-instance-private-key"}
+ privateBytes,err:=os.ReadFile(keyPath)
  if err!=nil{return err}
  if len(privateBytes)!=ed25519.PrivateKeySize{return errors.New("provisioned private key has wrong length")}
  private:=ed25519.PrivateKey(privateBytes)
@@ -60,8 +63,19 @@ func run()error{
    b.Scope.GuestEpoch=="" || b.Scope.LeaseEpoch=="" ||
    b.Scope.Generation==0 || b.Scope.ReleaseSequence==0 ||
    b.Challenge==([32]byte{}){return errors.New("invalid host binding")}
+  if instanceMode && b.Scope.GuestEpoch!=runtimeproof.InstanceEpoch(private.Public().(ed25519.PublicKey)){
+   fmt.Println("PROTECTED_GUEST_FOREIGN_INSTANCE_BINDING=DENIED")
+   return errors.New("guest instance binding mismatch")
+  }
   scope=b.Scope
   challenge=b.Challenge
+  if instanceMode{
+   enrolled,err:=runtimeproof.Sign(private,runtimeproof.Event{
+    Scope:scope,Challenge:challenge,Source:"guest.enrollment",KeyCode:"instance",EventSequence:1,
+   })
+   if err!=nil{return err}
+   if err=enc.Encode(enrolled);err!=nil{return err}
+  }
   fmt.Println("R27C_GUEST_HOST_CHALLENGE_BOUND=PASS")
   return nil
  }
