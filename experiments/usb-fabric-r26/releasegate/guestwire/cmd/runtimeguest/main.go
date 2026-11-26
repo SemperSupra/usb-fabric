@@ -13,6 +13,7 @@ import (
  "io"
  "os"
  "path/filepath"
+ "strings"
  "time"
 
  releasegate "example.org/usb-fabric-r26-releasegate"
@@ -32,6 +33,11 @@ type binding struct{
 }
 func run()error{
  if len(os.Args)!=3{return errors.New("need evdev node + virtio port")}
+ // Test-only crash witness: real evdev UP is observed on serial even when
+ // the original signed receipt connection disappeared with the controller.
+ // This serial marker is deliberately NOT a signed release authorization.
+ cmdline,err:=os.ReadFile("/proc/cmdline");if err!=nil{return err}
+ crashWitness:=strings.Contains(" "+strings.TrimSpace(string(cmdline))+" "," r27_crash_witness=1 ")
  privateBytes,err:=os.ReadFile("/etc/r27-guest-private-key")
  if err!=nil{return err}
  if len(privateBytes)!=ed25519.PrivateKeySize{return errors.New("provisioned private key has wrong length")}
@@ -74,6 +80,12 @@ func run()error{
   down:=raw.Value==1
   if down && seenDown{continue}
   if !down && (raw.Value!=0||!seenDown){continue}
+  if !down && crashWitness{
+   fmt.Println("R27C_GUEST_CRASH_EVDEV_UP_UNATTESTED=OBSERVED")
+   // Keep the guest alive while the independent recovery attempt concludes.
+   time.Sleep(5*time.Second)
+   return nil
+  }
   seq:=uint64(10+2*cycle)
   if !down{seq=uint64(11+2*cycle)}
   event,err:=runtimeproof.Sign(private,runtimeproof.Event{

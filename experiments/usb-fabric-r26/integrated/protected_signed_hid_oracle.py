@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import select
 import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -125,7 +126,53 @@ def stop(proc):
         proc.kill()
         proc.wait(timeout=7)
 
+def crash_recovery(actuator,first,qemu,qlogs,journal,api,clientdir):
+    before=journal.read_bytes()
+    record=json.loads(before)
+    if not record.get("held") or record.get("sequence")!=1:
+        raise RuntimeError("precrash durable HELD missing")
+    argv=list(actuator.args)
+    actuator.kill();actuator.wait(timeout=8)
+    if actuator.returncode!=-9:raise RuntimeError("controller was not SIGKILLed")
+    if journal.read_bytes()!=before:raise RuntimeError("crash changed HELD")
+    print("PROTECTED_CONTROLLER_SIGKILL_AFTER_SIGNED_DOWN=PASS",flush=True)
+    recovery=str(clientdir/"recovery.sock")
+    argv[argv.index("--socket")+1]=recovery
+    wrong=list(argv)
+    wrong[wrong.index("--qmp-protected-pid")+1]=str(qemu.pid+1)
+    denied=subprocess.run(wrong,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=15,**OWNER)
+    if denied.returncode!=3 or b"QMP unavailable:" not in denied.stdout or Path(recovery).exists() or journal.read_bytes()!=before:
+        raise RuntimeError("wrong QEMU PID recovery not denied: "+repr(denied.stdout[-800:]))
+    print("PROTECTED_RECOVERY_WRONG_VM_PID_DENIED_UNCHANGED=PASS",flush=True)
+    result=subprocess.run(argv,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=20,**OWNER)
+    markers=(b"R26_L3_ACTUATOR_RESTART_FORCED_QMP_KEY_UP=PASS",b"R26_L3_JOURNAL_REMAINS_HELD_PENDING_GUEST_ATTESTATION=PASS",b"R26_L3_RECOVERY_HOLD_REQUIRES_TOPOLOGY_RECONCILIATION=PASS")
+    if result.returncode or any(m not in result.stdout for m in markers) or b"R26_L_SOLE_QMP_ACTUATOR_LISTENING=PASS" in result.stdout:
+        raise RuntimeError("recovery did not quarantine: "+repr(result.stdout[-1200:]))
+    qlogs.wait("R27C_GUEST_CRASH_EVDEV_UP_UNATTESTED=OBSERVED",25)
+    if journal.read_bytes()!=before or Path(recovery).exists():
+        raise RuntimeError("recovery incorrectly cleared journal or published frontend")
+    probe="""
+import socket,sys,errno
+for path in sys.argv[1:]:
+ s=socket.socket(socket.AF_UNIX);s.settimeout(3)
+ try:s.connect(path)
+ except OSError as e:
+  if e.errno not in (errno.ENOENT,errno.ECONNREFUSED):raise
+ else:raise RuntimeError("stale or recovery frontend accepted connection")
+ finally:s.close()
+print("PROTECTED_CRASH_OLD_AND_NEW_FRONTEND_UNAVAILABLE=PASS")
+"""
+    observed=subprocess.run(["python3","-c",probe,api,recovery],capture_output=True,text=True,timeout=10,**CLIENT)
+    if observed.returncode or "PROTECTED_CRASH_OLD_AND_NEW_FRONTEND_UNAVAILABLE=PASS" not in observed.stdout:
+        raise RuntimeError("frontend isolation failure "+observed.stderr)
+    print(observed.stdout.strip(),flush=True)
+    print("PROTECTED_REAL_GUEST_NEUTRAL_BUT_DURABLE_HELD_BYTE_IDENTICAL=PASS",flush=True)
+    print("PROTECTED_CONTROLLER_CRASH_RECOVERY_QUARANTINE=PASS",flush=True)
+    print("RECOVERY_SIGNED_REENROLLMENT_AND_POWER_LOSS=NOT_TESTED",flush=True)
+
 def main():
+    crash=len(sys.argv)==2 and sys.argv[1]=="--crash-recovery"
+    if len(sys.argv)>1 and not crash:raise RuntimeError("invalid oracle mode")
     with tempfile.TemporaryDirectory(prefix="r27c-ed25519-",dir="/tmp") as d:
         boundary=Path(d);boundary.chmod(0o711)
         root=boundary/"private";root.mkdir(mode=0o700)
@@ -150,7 +197,7 @@ def main():
                 "-nodefaults","-display","none","-monitor","none",
                 "-serial","stdio","-net","none","-no-reboot",
                 "-kernel","/guest/kernel","-initrd","/guest/initrd.gz",
-                "-append","console=ttyS0 rdinit=/init loglevel=7 panic=-1 r27_signed=1",
+                "-append","console=ttyS0 rdinit=/init loglevel=7 panic=-1 r27_signed=1"+(" r27_crash_witness=1" if crash else ""),
                 "-device","qemu-xhci,id=xhci0",
                 "-device","virtio-serial-pci,id=vs0",
                 "-chardev","socket,id=receipt,path="+receipt+",server=on,wait=off",
@@ -209,6 +256,11 @@ sys.exit(1)
             if not held.get("held") or held.get("sequence")!=1:
                 raise RuntimeError("host did not write-ahead durable key down")
             print("R26_L9C_REAL_GUEST_DOWN_HELD_JOURNAL=PASS",flush=True)
+            if crash:
+                crash_recovery(actuator,first,qemu,qlogs,journal,api,clientdir)
+                if hashlib.sha256(media.read_bytes()).hexdigest()!=original:raise RuntimeError("media mutated")
+                if not capture.exists() or capture.stat().st_size<=24:raise RuntimeError("real USB pcap missing")
+                return
             first.kill()
             first.wait(timeout=5)
             first=None
