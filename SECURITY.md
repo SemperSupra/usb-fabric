@@ -1,0 +1,3 @@
+# Security policy
+
+USB Connection Fabric is not released. Report potential security issues privately to the maintainers; do not publish exploitable operational details, keys or sensitive captures. Review public-safe source and evidence before publication. No production credentials, private device data or hardware access in this repository. Source adoption is profile-specific. Native first: protected QMP, actual guest HID and release, controller recovery and trusted guest enrollment. Managed: stable source identity, scoped journal, independently verified effective isolation and G4. Native does not depend on managed G4.
