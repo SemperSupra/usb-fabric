@@ -1,0 +1,40 @@
+name: Native identity-bound HELD source qualification
+on:
+  pull_request:
+    branches: [feature/issue-7-recovery-neutral-proof]
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: usb-fabric-issue7-native-bound-held
+  cancel-in-progress: false
+jobs:
+  native-bound-held:
+    if: ${{ github.event.pull_request.head.ref == 'test/issue-7-native-bound-held-qualification' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.sha == 'd042c9d4d4eb4b9f20d5f06b22434628485dc07e' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 'd042c9d4d4eb4b9f20d5f06b22434628485dc07e'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact source, full offline regression and native bound-HELD reps
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: 'off'
+          GOSUMDB: 'off'
+          GOWORK: 'off'
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = 'd042c9d4d4eb4b9f20d5f06b22434628485dc07e'
+          test "$(git rev-parse HEAD^)" = '8160a214d79d6d078173a4d64a990873c40769a3'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test -z "$(git ls-tree -r --name-only HEAD -- .github/workflows)"
+          uname -srm; git --version; go version; df -h .
+          (cd experiments/usb-fabric-r26/releasegate && /usr/bin/time -v go test -race -count=1 -timeout=120s ./... && go vet ./...)
+          (cd experiments/usb-fabric-r26/integrated && /usr/bin/time -v go test -race -count=1 -timeout=120s ./... && go vet ./...)
+          (cd experiments/usb-fabric-r26/releasegate && /usr/bin/time -v go test -race -count=10 -timeout=120s -v ./runtimeproof -run '^TestRecovery')
+          (cd experiments/usb-fabric-r26/integrated && /usr/bin/time -v go test -race -count=10 -timeout=120s -v ./heldledger -run '^TestNativeBoundHeld')
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo NATIVE_BOUND_HELD_SOURCE_QUALIFICATION=PASS
