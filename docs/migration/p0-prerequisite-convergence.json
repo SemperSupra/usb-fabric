@@ -1,0 +1,106 @@
+{
+  "schema": "usb-fabric/p0-prerequisite-convergence/v1",
+  "status": "SOURCE_CANDIDATE_NO_RUNTIME_AUTHORITY",
+  "base": "dac830f9be31036848fcc343fa677db498036586",
+  "parents": {
+    "native": "d042c9d4d4eb4b9f20d5f06b22434628485dc07e",
+    "managed": "885c0f040ab75ff64f23213d49c55907a2c0fbe4"
+  },
+  "native": [
+    {
+      "path": "experiments/usb-fabric-r26/integrated/heldledger/ledger.go",
+      "sha": "7cc8540272271e3a3e89a66113bee25f907c72a8",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/heldledger/native_bound_held_linux.go",
+      "sha": "f0bdf19543e4001403fcc189542e61ac6a0e81ef",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/heldledger/native_bound_held_linux_test.go",
+      "sha": "00da4f117369c73cec72050fa93d8df338c52be5",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/releasegate/runtimeproof/recovery.go",
+      "sha": "281a0c8bdefea516ccf360e471e5a5e471410787",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/releasegate/runtimeproof/recovery_test.go",
+      "sha": "e95ed6cb5cf4514a7597cda25c663b1a15833faf",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/native-bound-held.md",
+      "sha": "51bad44d60facaac03858d86f9c62a35188b26ad",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/native-recovery-neutral-receipt.json",
+      "sha": "0f1bb8c1e402c47339f7f31d680f84030ab9ccd8",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/native-recovery-neutral.md",
+      "sha": "02de229ffdfc16db5e340ddeda2de6fa56dee687",
+      "mode": "100644"
+    }
+  ],
+  "managed": [
+    {
+      "path": "experiments/usb-fabric-r26/integrated/blue/scoped_first_held_linux_test.go",
+      "sha": "3a5c4dec46c5ddd9feb69b3d8c463b02be2834f5",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/blue/scoped_genesis_owner_linux.go",
+      "sha": "03946231d769b0ac3324370a263b088b3d0e644f",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/heldledger/scoped_first_held.go",
+      "sha": "14a933e9c132b2688cb868386a7635bf0fbb18f8",
+      "mode": "100644"
+    },
+    {
+      "path": "experiments/usb-fabric-r26/integrated/heldledger/scoped_first_held_linux_test.go",
+      "sha": "1d1ee68fe642aa363f0a0924fd64e0ea185e7c2a",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/scoped-first-admission-model-receipt.json",
+      "sha": "81f39b621dff797465c5520edcdfe16a4708c679",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/scoped-first-admission-model.md",
+      "sha": "9af877f9a1e2b16e1b162da40c3fdfac2f643147",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/scoped-first-held.md",
+      "sha": "e537cadddff27753f01ed6e71d65f7669e6277e2",
+      "mode": "100644"
+    },
+    {
+      "path": "qualification/scoped_first_admission_model.py",
+      "sha": "0ad718ffc8ae156ecb282e07af1bc0832ad08baa",
+      "mode": "100644"
+    }
+  ],
+  "prior_source_qualification": {
+    "managed": {
+      "pr": 16,
+      "run": 45870084970,
+      "job": 140082929790
+    },
+    "native": {
+      "pr": 18,
+      "run": 45870412779,
+      "job": 140084046480
+    }
+  },
+  "limits": "No runtime activation, input, authenticated recovery or release. Requalify combined exact head."
+}
