@@ -1,0 +1,40 @@
+name: Scoped v2 first-input HELD source qualification
+on:
+  pull_request:
+    branches: [test/issue-11-scoped-first-admission-model]
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: usb-fabric-issue11-first-held
+  cancel-in-progress: false
+jobs:
+  first-held:
+    if: ${{ github.event.pull_request.head.ref == 'test/issue-11-first-held-qualification' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.sha == '885c0f040ab75ff64f23213d49c55907a2c0fbe4' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: '885c0f040ab75ff64f23213d49c55907a2c0fbe4'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact source, full offline regression and first-HELD reps
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: 'off'
+          GOSUMDB: 'off'
+          GOWORK: 'off'
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = '885c0f040ab75ff64f23213d49c55907a2c0fbe4'
+          test "$(git rev-parse HEAD^)" = '46e9168e0f0a68d67d4164daffc253bf86aeda51'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test -z "$(git ls-tree -r --name-only HEAD -- .github/workflows)"
+          uname -srm; git --version; go version; python3 --version; df -h .
+          python3 -B qualification/scoped_first_admission_model.py
+          (cd experiments/usb-fabric-r26/releasegate && /usr/bin/time -v go test -race -count=1 -timeout=120s ./... && go vet ./...)
+          (cd experiments/usb-fabric-r26/integrated && /usr/bin/time -v go test -race -count=1 -timeout=120s ./... && go vet ./...)
+          (cd experiments/usb-fabric-r26/integrated && /usr/bin/time -v go test -race -count=10 -timeout=120s -v ./blue ./heldledger -run '^TestScopedFirstHeld')
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo SCOPED_FIRST_HELD_SOURCE_QUALIFICATION=PASS
