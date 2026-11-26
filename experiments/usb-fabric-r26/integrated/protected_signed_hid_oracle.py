@@ -192,11 +192,11 @@ def provision_instance(root,wrong):
     with open("/guest/initrd.gz","rb") as source,open(initrd,"xb") as target:
         shutil.copyfileobj(source,target)
         target.write(gzip.compress(archive,mtime=0))
-    os.chown(initrd,65532,65532);initrd.chmod(0o400)
+    initrd.chmod(0o400);os.chown(initrd,65532,65532)
     secret.unlink()
     if wrong:
         pin=root/"stale.pub";pin.write_bytes(Path("/guest/r27-guest-public").read_bytes())
-        os.chown(pin,65532,65532);pin.chmod(0o400)
+        pin.chmod(0o400);os.chown(pin,65532,65532)
     else:pin=pub
     print("PROTECTED_GUEST_PER_LAUNCH_KEY_PROVISIONED=PASS",flush=True)
     return initrd,pin
