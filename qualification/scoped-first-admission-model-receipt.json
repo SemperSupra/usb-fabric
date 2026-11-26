@@ -1,0 +1,41 @@
+{
+  "schema": "usb-fabric/scoped-first-admission-model/v1",
+  "base": "dac830f9be31036848fcc343fa677db498036586",
+  "model_blob": "0ad718ffc8ae156ecb282e07af1bc0832ad08baa",
+  "scope": "finite requirements abstraction only, no production code or grant",
+  "source_findings": [
+    "ScopedGenesisOwner.PrepareAdmission writes scoped v2 sequence-2 intent, not grant.",
+    "All existing Manager constructors reject v2; legacy Store.Read/Transition use v1.",
+    "Need same-owner activation, typed v2 ledger transitions and retirement before unlock; do not downgrade."
+  ],
+  "runtime": {
+    "os": "Linux 6.18.57 x86_64",
+    "python": "3.13.5",
+    "command": "python3 -B qualification/scoped_first_admission_model.py",
+    "wall_seconds": 0.63,
+    "user_cpu_seconds": 0.97,
+    "system_cpu_seconds": 0.06,
+    "max_rss_kib": 96140,
+    "exit_code": 0
+  },
+  "positive": {
+    "states": 53,
+    "edges": 234,
+    "fixpoint": true,
+    "crash_cutpoints": 4
+  },
+  "mutants_rejected": [
+    "skip-witness",
+    "replay-intent",
+    "downgrade",
+    "input-before-fsync",
+    "unlock-before-retire",
+    "ignore-fence-loss"
+  ],
+  "limits": [
+    "Witness truth, key independence and binding assumed abstractly; no actual source/guest witness verdict",
+    "Single resource, atomic model transitions, no proof of thread scheduling/lock implementation or physical fsync",
+    "Later release/handoff, recovery authorization, liveness and performance NOT_TESTED",
+    "No runtime authority change; proposed design must undergo implementation and real negative qualification"
+  ]
+}
