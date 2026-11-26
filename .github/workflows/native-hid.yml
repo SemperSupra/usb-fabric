@@ -1,33 +1,41 @@
-name: USB Fabric actual scoped TCP fence witness
+name: USB Fabric product-native three kernel legacy baseline
 on:
   push:
-    branches: [test/issue-8-live-network-witness]
+    branches: [test/issue-11-three-kernel-adoption]
 permissions:
   contents: read
 concurrency:
-  group: usb-fabric-live-tcp-witness
+  group: usb-fabric-three-kernel-adoption
   cancel-in-progress: false
 jobs:
-  live-scoped-network-witness:
+  three-real-kernels:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
           fetch-depth: 2
-      - name: Original scoped owner and actual TCP child witness
+      - name: Verify exact source adoption and original shared core
         env:
+          GOTOOLCHAIN: local
           GOPROXY: 'off'
           GOSUMDB: 'off'
-          GOTOOLCHAIN: local
           GOWORK: 'off'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 1957a30e5ebc968a1e6de4b0fad1c66549f0a3c9
-          cd experiments/usb-fabric-r26/integrated/
-          go version
-          go test -race -count=3 -timeout=120s ./...
+          test "$(git rev-parse HEAD^)" = 79633411bc7679c00d119dc72da90e725165fb2a
+          python3 -B qualification/verify-three-kernel-adoption.py
+          cd experiments/usb-fabric-r26/integrated
+          go test -race -count=1 -timeout=120s ./...
           go vet ./...
-          go test -race -count=10 -timeout=120s -v ./blue -run '^TestScopedOwnerLiveTCPWitness$'
+      - name: Product-native original real USBIP A to B and HELD recovery refusal
+        run: bash experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify-product.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: three-kernel-qualification-not-release
+          path: ${{ runner.temp }}/r27-g-original-kernel-isolated-a-usbip.log
+          retention-days: 7
+          if-no-files-found: warn
