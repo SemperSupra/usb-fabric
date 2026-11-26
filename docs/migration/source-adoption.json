@@ -1,0 +1,31 @@
+{
+  "schema": "usb-product/source-adoption-plan/v1",
+  "destination": "SemperSupra/usb-fabric",
+  "status": "PROPOSED_NOT_IMPORTED",
+  "source_authority_transferred": false,
+  "publication": "PUBLIC_SAFE_REVIEW_REQUIRED",
+  "candidates": [
+    {
+      "role": "native-source-candidate",
+      "repository": "SemperSupra/agent-dispatch",
+      "revision": "dfc09b99d6d955aeafdbf0246c24fe1f4893d168",
+      "qualification_run": 45774154570,
+      "scope": "Test-only protected real Linux guest HID, two leases, release and detach. Production trust and controller crash recovery not qualified."
+    },
+    {
+      "role": "managed-source-candidate",
+      "repository": "SemperSupra/agent-dispatch",
+      "revision": "8a809c22dc54e7ac16dfe0e7f7104bf38f6d08af",
+      "qualification_run": 45774271510,
+      "scope": "Original scoped resource locks and signed fixture journal intent; no live managed grant."
+    }
+  ],
+  "acceptance": [
+    "Exact path/blob/dependency inventory with licensing and provenance reviewed",
+    "No private source/metadata or legacy workflow subtree",
+    "Product-native build and independent profile regression, negative evidence retained",
+    "Bounded runner cost and cleanup receipt",
+    "Verified source-owner handoff, redirects and rollback"
+  ],
+  "next": "Inventory exact candidate module paths and transitive source dependencies; review license/provenance and source-only extraction, excluding all inherited workflow definitions. Do not import entire experimental trees. Prepare independent native and managed source adoption PRs from approved inventory."
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "repository": "SemperSupra/usb-fabric",
+  "display_name": "USB Connection Fabric",
+  "description": "One connection authority and durable transaction/lease journal",
+  "visibility": "public",
+  "default_branch": "main",
+  "primary_languages": [
+    "Go",
+    "Shell",
+    "Python"
+  ],
+  "topics": [
+    "usb",
+    "qemu",
+    "usbip",
+    "virtualization"
+  ],
+  "owners": [
+    "SemperSupra"
+  ],
+  "scope": {
+    "included": [
+      "One connection authority and durable transaction/lease journal",
+      "Versioned topology, stable resource identity, operation and grant contracts",
+      "Native QEMU and managed USB/IP backends with distinct release profiles"
+    ],
+    "out_of_scope": [
+      "Network session enforcement",
+      "Device application UX",
+      "Private evidence or credentials"
+    ]
+  },
+  "coordination": {
+    "system_of_record": "GitHub",
+    "policy_document": "AGENTS.md",
+    "current_task": "CURRENT_TASK.md",
+    "issue_required": true,
+    "pull_request_required": true,
+    "branch_pattern": "^(agent|feature|fix|docs|ops|chore|test|refactor)/issue-[0-9]+-[a-z0-9][a-z0-9-]*$",
+    "direct_agent_push_to_default_branch": false,
+    "timestamp_standard": "ISO 8601 UTC",
+    "required_identity_fields": [
+      "Actor",
+      "Session",
+      "Branch",
+      "State"
+    ],
+    "cross_repository_rule": "Source owner remains authoritative until accepted cutover. Versioned contracts, linked issues and pinned source; no duplicated work queue."
+  },
+  "security": {
+    "secret_values_allowed_in_repository": false,
+    "public_source_only": true,
+    "security_policy": "SECURITY.md",
+    "logs_must_be_sanitized": true
+  },
+  "target_github_settings": {
+    "status": "PROPOSED_NOT_APPLIED",
+    "default_branch": "main",
+    "require_pull_request": true,
+    "require_review": true,
+    "block_force_pushes": true,
+    "block_deletions": true
+  },
+  "bootstrap": {
+    "issue": 1,
+    "authority_state": "DESTINATION_ONLY_NOT_CUTOVER",
+    "release": "NO_GO",
+    "workflows_installed": false
+  }
+}
