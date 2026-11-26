@@ -188,6 +188,7 @@ func (s Store) writeAtomicRecord(state any)error{
  if e=f.Chmod(0600);e!=nil{f.Close();return e}
  data,e:=json.Marshal(state);if e!=nil{f.Close();return e}
  data=append(data,'\n')
+ if len(data)>maxBytes{f.Close();return ErrInvalid}
  if n,err:=f.Write(data);err!=nil||n!=len(data){f.Close();if err!=nil{return err};return io.ErrShortWrite}
  if e=f.Sync();e!=nil{f.Close();return e}
  if e=f.Close();e!=nil{return e}

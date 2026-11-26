@@ -87,6 +87,7 @@ func validateNativeHeld(r NativeHeldRecord,pin ed25519.PublicKey)error{
  if s.Generation==0||s.ReleaseSequence!=r.Sequence||s.GuestEpoch!=runtimeproof.InstanceEpoch(pin){return ErrInvalid}
  for _,v:=range []string{s.GuestID,s.DeviceID,s.HostEpoch,s.GuestEpoch,s.LeaseEpoch}{
   if len(v)==0||len(v)>256{return ErrInvalid}
+  for _,c:=range v{if !(c>='a'&&c<='z'||c>='A'&&c<='Z'||c>='0'&&c<='9'||c=='-'||c=='_'||c=='.'||c==':'||c=='/'){return ErrInvalid}}
  }
  if _,e:=nativeLaunchDigest(r.Identity.LaunchDigest);e!=nil{return e}
  if (r.LastReleaseEventSequence==0)!=(r.LastReleaseProofHash==""){return ErrInvalid}

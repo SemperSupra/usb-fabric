@@ -64,6 +64,8 @@ func TestNativeBoundHeldRejectsForeignAndMalformed(t *testing.T){
   func(x *NativeHeldIdentity){x.Scope.ReleaseSequence++},
   func(x *NativeHeldIdentity){x.Scope.GuestEpoch="foreign"},
   func(x *NativeHeldIdentity){x.Scope.LeaseEpoch=strings.Repeat("x",257)},
+  func(x *NativeHeldIdentity){x.Scope.LeaseEpoch="non-canonical\nlease"},
+  func(x *NativeHeldIdentity){x.Scope.GuestID=string([]byte{0xff})},
   func(x *NativeHeldIdentity){x.LaunchDigest=strings.Repeat("0",64)},
   func(x *NativeHeldIdentity){x.LaunchDigest="bad"},
  }{
