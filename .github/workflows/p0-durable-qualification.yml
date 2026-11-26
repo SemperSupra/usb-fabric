@@ -1,0 +1,41 @@
+name: Combined P0 durable prerequisites source qualification
+on:
+  pull_request:
+    branches: [integration/issue-3-p0-durable-prerequisites]
+    types: [opened]
+permissions:
+  contents: read
+concurrency:
+  group: usb-fabric-issue3-p0-durable-qualification
+  cancel-in-progress: false
+jobs:
+  p0-source:
+    if: ${{ github.event.pull_request.head.ref == 'test/issue-3-p0-durable-qualification' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.sha == '3c1f75ddd728e1edeca4891e0cfc00b1f294e79c' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: '3c1f75ddd728e1edeca4891e0cfc00b1f294e79c'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Exact two-parent source union and all new regression groups
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: 'off'
+          GOSUMDB: 'off'
+          GOWORK: 'off'
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = '3c1f75ddd728e1edeca4891e0cfc00b1f294e79c'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          uname -srm; git --version; go version; python3 --version; df -h .
+          python3 -B qualification/verify-p0-convergence.py
+          python3 -B qualification/verify-three-kernel-adoption.py
+          python3 -B qualification/scoped_first_admission_model.py
+          (cd experiments/usb-fabric-r26/releasegate && /usr/bin/time -v go test -race -count=1 -timeout=120s ./... && go vet ./...)
+          (cd experiments/usb-fabric-r26/integrated && /usr/bin/time -v go test -race -count=1 -timeout=120s ./... && go vet ./...)
+          (cd experiments/usb-fabric-r26/releasegate && /usr/bin/time -v go test -race -count=10 -timeout=120s -v ./runtimeproof -run '^TestRecovery')
+          (cd experiments/usb-fabric-r26/integrated && /usr/bin/time -v go test -race -count=10 -timeout=120s -v ./blue ./heldledger -run '^Test(ScopedFirstHeld|NativeBoundHeld)')
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo P0_COMBINED_SOURCE_QUALIFICATION=PASS
