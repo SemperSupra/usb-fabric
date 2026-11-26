@@ -25,17 +25,11 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = f94caeed884cd31547ac79deace4cc7948a5b286
-          (cd experiments/usb-fabric-r26/releasegate && go test -race -count=3 -timeout=120s ./... && go vet ./... && go test -race -count=10 -v ./runtimeproof -run '^TestProtectedInstanceEnrollment
-          go test -race -count=1 -timeout=120s ./...
-          go vet ./...
-          python3 -B -c 'import ast; ast.parse(open("protected_signed_hid_oracle.py").read())'
-      - name: Same-run protected service, Linux guest HID, release and detach
-        run: bash experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh
-)
+          test "$(git rev-parse HEAD^)" = e2d501ad9d4ff4a36b1a4a949eaf47a3d30059ca
+          (cd experiments/usb-fabric-r26/releasegate && go test -race -count=3 -timeout=120s ./... && go vet ./... && go test -race -count=10 -v ./runtimeproof -run '^TestProtectedInstanceEnrollment$')
           cd experiments/usb-fabric-r26/integrated/
           go test -race -count=1 -timeout=120s ./...
           go vet ./...
           python3 -B -c 'import ast; ast.parse(open("protected_signed_hid_oracle.py").read())'
-      - name: Same-run protected service, Linux guest HID, release and detach
+      - name: Real per-launch enrolled guest HID, crash and foreign-instance rejection
         run: bash experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh
