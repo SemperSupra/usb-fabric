@@ -1,38 +1,14 @@
-name: USB Fabric shared core and protected native HID
+name: USB Fabric actual scoped TCP fence witness
 on:
   push:
-    branches: [feature/issue-3-adopt-fabric]
+    branches: [test/issue-8-live-network-witness]
 permissions:
   contents: read
 concurrency:
-  group: usb-native-owner-order-20261126
+  group: usb-fabric-live-tcp-witness
   cancel-in-progress: false
 jobs:
-  protected-guest-hid:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          persist-credentials: false
-          fetch-depth: 2
-      - name: Source pin and original package checks
-        env:
-          GOTOOLCHAIN: local
-          GOPROXY: 'off'
-          GOSUMDB: 'off'
-          GOWORK: 'off'
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 1b968b664fe8591363ef0c4cb42f7cbd1b01339c
-          cd experiments/usb-fabric-r26/integrated/
-          go test -race -count=1 -timeout=120s ./...
-          go vet ./...
-          python3 -B -c 'import ast; ast.parse(open("protected_signed_hid_oracle.py").read())'
-      - name: Same-run protected service, Linux guest HID, release and detach
-        run: bash experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh
-  managed-scoped-core:
+  live-scoped-network-witness:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -40,20 +16,18 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 2
-      - name: Original managed scoped journal and resource-owner regression
+      - name: Original scoped owner and actual TCP child witness
         env:
-          GOTOOLCHAIN: local
           GOPROXY: 'off'
           GOSUMDB: 'off'
+          GOTOOLCHAIN: local
           GOWORK: 'off'
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 1b968b664fe8591363ef0c4cb42f7cbd1b01339c
+          test "$(git rev-parse HEAD^)" = 1957a30e5ebc968a1e6de4b0fad1c66549f0a3c9
+          cd experiments/usb-fabric-r26/integrated/
           go version
-          cd experiments/usb-fabric-r26/integrated
           go test -race -count=3 -timeout=120s ./...
           go vet ./...
-          go test -race -count=10 -timeout=90s -v ./blue -run '^TestScopedOwner'
-          go test -race -count=10 -timeout=90s -v ./heldledger -run '^TestScoped'
-          echo MANAGED_SHARED_CORE_FIXTURE_ONLY_NO_LIVE_G4_GRANT
+          go test -race -count=10 -timeout=120s -v ./blue -run '^TestScopedOwnerLiveTCPWitness$'
