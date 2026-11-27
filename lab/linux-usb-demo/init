@@ -28,17 +28,34 @@ while [ "$i" -lt 45 ]; do
     sleep 1
 done
 [ -n "$event" ] && [ -c "$event" ] || { say "GUEST_KEYBOARD_MISSING"; exec sh; }
-found=0
-for d in /sys/bus/usb/devices/*; do
-    [ -r "$d/idVendor" ] && [ -r "$d/idProduct" ] || continue
-    vendor="$(cat "$d/idVendor")"
-    product="$(cat "$d/idProduct")"
-    name="$(cat "$d/product" 2>/dev/null || true)"
-    say "USB $vendor:$product $name"
-    case "$name" in *QEMU*Keyboard*) found=1;; esac
+# Independently observe each device and its actual USB interface driver.
+bound_device() {
+    target="$1"
+    count=0
+    for d in /sys/bus/usb/devices/*; do
+        [ -r "$d/idVendor" ] && [ -r "$d/idProduct" ] || continue
+        [ "$(cat "$d/idVendor")" = "0627" ] || continue
+        [ "$(cat "$d/idProduct")" = "$target" ] || continue
+        for interface in "$d":*; do
+            [ -L "$interface/driver" ] || continue
+            [ "$(basename "$(readlink "$interface/driver")")" = "usbhid" ] || continue
+            count=$((count+1))
+        done
+    done
+    [ "$count" -eq 1 ]
+}
+i=0
+until bound_device 0001 && bound_device 0002; do
+    i=$((i+1))
+    [ "$i" -lt 45 ] || { say "GUEST_USB_HID_BINDING_FAILED"; exec sh; }
+    sleep 1
 done
-[ "$found" = 1 ] || { say "GUEST_USB_KEYBOARD_NOT_ENUMERATED"; exec sh; }
+say "USB 0627:0001 keyboard usbhid"
+say "USB 0627:0002 tablet usbhid"
 say "GUEST_USB_KEYBOARD_ENUMERATED=PASS"
+say "GUEST_USB_KEYBOARD_DRIVER_BOUND=PASS"
+say "GUEST_USB_TABLET_ENUMERATED=PASS"
+say "GUEST_USB_TABLET_DRIVER_BOUND=PASS"
 say "Waiting for host QMP input..."
 /bin/observe "$event" | tee /dev/tty0
 # The observer supplies its own ordered down/up markers. A failure cannot forge them.
