@@ -27,6 +27,7 @@ def main(build, out):
                 '-kernel', str(build / 'vmlinuz'), '-initrd', str(build / 'initramfs.cpio.gz'),
                 '-append', 'console=tty0 console=ttyS0 quiet loglevel=3 panic=1 rdinit=/init',
                 '-device', 'qemu-xhci,id=xhci', '-device', 'usb-kbd,bus=xhci.0,id=demo-keyboard',
+                '-device', 'usb-tablet,bus=xhci.0,id=demo-tablet',
                 '-display', 'none', '-monitor', 'none', '-serial', f'file:{serial}', '-nic', 'none',
                 '-qmp', f'unix:{sock},server=on,wait=off', '-no-reboot'],
                 stdout=subprocess.DEVNULL, stderr=err)
@@ -37,8 +38,12 @@ def main(build, out):
                 helper.wait_for(sock.exists, 'QMP socket missing')
                 qmp = helper.QMP(sock)
                 wait_marker(b'GUEST_USB_KEYBOARD_ENUMERATED=PASS')
+                wait_marker(b'GUEST_USB_KEYBOARD_DRIVER_BOUND=PASS')
+                wait_marker(b'GUEST_USB_TABLET_ENUMERATED=PASS')
+                wait_marker(b'GUEST_USB_TABLET_DRIVER_BOUND=PASS')
                 wait_marker(b'GUEST_EVDEV_READY')
                 helper.require('keyboard' in qmp.usb().lower(), 'host keyboard missing')
+                helper.require('tablet' in qmp.usb().lower(), 'host tablet missing')
                 key = {'type': 'qcode', 'data': 'a'}
                 qmp.call('input-send-event', events=[{'type':'key','data':{'down':True,'key':key}}])
                 wait_marker(b'GUEST_EVDEV_KEY_A_DOWN=PASS', 20)
@@ -52,11 +57,11 @@ def main(build, out):
                 lines = serial.read_text(errors='replace').splitlines()
                 markers = [s for s in lines if s.startswith(('USB ', 'GUEST_'))]
                 (out / 'guest-observations.txt').write_text('\n'.join(markers)+'\n')
-                receipt = {'scope': 'Native QEMU USB keyboard; real Linux guest sysfs and evdev, no USB/IP claim',
+                receipt = {'scope': 'Native QEMU USB keyboard and tablet binding; real Linux guest sysfs and keyboard evdev, no USB/IP claim',
                            'qemu': qmp.call('query-version'),
                            'kernel': (build/'kernel-version.txt').read_text().strip(),
                            'kernel_sha256': hashlib.sha256((build/'vmlinuz').read_bytes()).hexdigest(),
-                           'usb_enumerated': True, 'evdev_key_a_down': True, 'evdev_key_a_up': True,
+                           'usb_enumerated': True, 'keyboard_usbhid_bound': True, 'tablet_usbhid_bound': True, 'evdev_key_a_down': True, 'evdev_key_a_up': True,
                            'framebuffer': dims, 'guest_observations': markers}
                 (out/'receipt.json').write_text(json.dumps(receipt, indent=2)+'\n')
                 print(json.dumps(receipt, indent=2))
