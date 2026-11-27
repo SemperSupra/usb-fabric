@@ -20,23 +20,26 @@ jobs:
         run: |
           set -Eeuo pipefail
           git worktree add --detach "$RUNNER_TEMP/baseline" 3c1f75ddd728e1edeca4891e0cfc00b1f294e79c
-          (cd "$RUNNER_TEMP/baseline"; python3 -B qualification/verify-source-convergence.py; python3 -B qualification/verify-three-kernel-adoption.py)
+          (cd "$RUNNER_TEMP/baseline"; python3 -B qualification/verify-p0-convergence.py; python3 -B qualification/verify-three-kernel-adoption.py)
           git worktree remove "$RUNNER_TEMP/baseline"
           test "$(git diff --name-only 3c1f75ddd728e1edeca4891e0cfc00b1f294e79c HEAD)" = "$(printf '%s\n' .github/workflows/managed-usb-id-diagnostics.yml experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile.base)"
           git diff --check 3c1f75ddd728e1edeca4891e0cfc00b1f294e79c HEAD
       - name: Repeat actual three-kernel transport qualification
+        id: runtime
         run: |
           set -Eeuo pipefail
           export GITHUB_SHA="$(git rev-parse HEAD)"
-          /usr/bin/time -v bash experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify-product.sh
+          /usr/bin/time -v bash experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify-product.sh 2>&1 | tee "$RUNNER_TEMP/managed-diagnostics-wrapper.log"
           log="$RUNNER_TEMP/r27-g-original-kernel-isolated-a-usbip.log"
           test -s "$log"
           if grep -F 'failed to open /usr/share/misc/usb.ids' "$log"; then exit 1; fi
           echo USB_ID_DATABASE_DIAGNOSTICS=PASS
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        if: always()
+        if: always() && steps.runtime.outcome != 'skipped'
         with:
           name: managed-diagnostics-evaluation-not-release
-          path: ${{ runner.temp }}/r27-g-original-kernel-isolated-a-usbip.log
+          path: |
+            ${{ runner.temp }}/managed-diagnostics-wrapper.log
+            ${{ runner.temp }}/r27-g-original-kernel-isolated-a-usbip.log
           retention-days: 7
           if-no-files-found: error
