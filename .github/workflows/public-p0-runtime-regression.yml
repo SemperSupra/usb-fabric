@@ -1,0 +1,55 @@
+name: Public candidate runtime regression
+on:
+  push:
+    branches: [qualification/public-p0-runtime-regression]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  runtime:
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [native, managed]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: '3c1f75ddd728e1edeca4891e0cfc00b1f294e79c'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact public source
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD)" = '3c1f75ddd728e1edeca4891e0cfc00b1f294e79c'
+          python3 -B qualification/verify-p0-convergence.py
+          python3 -B qualification/verify-three-kernel-adoption.py
+          git status --porcelain
+      - name: Run existing real runtime regression
+        env:
+          PROFILE: ${{ matrix.profile }}
+          CANDIDATE: '3c1f75ddd728e1edeca4891e0cfc00b1f294e79c'
+        run: |
+          set -Eeuo pipefail
+          mkdir -p "$RUNNER_TEMP/public-regression-receipt"
+          case "$PROFILE" in
+            native) script=experiments/usb-fabric-r26/integrated/protected_signed_hid_verify.sh ;;
+            managed) script=experiments/pi-usb-fabric-r27/typed-kernel-runtime/verify-product.sh ;;
+            *) exit 2 ;;
+          esac
+          set +e
+          GITHUB_SHA="$CANDIDATE" /usr/bin/time -v bash "$script" 2>&1 | tee "$RUNNER_TEMP/runtime.log"
+          rc="${PIPESTATUS[0]}"
+          set -e
+          printf 'source=%s\nprofile=%s\nexit=%s\nscope=existing-runtime-regression-not-new-P0-activation\n' "$CANDIDATE" "$PROFILE" "$rc" > "$RUNNER_TEMP/public-regression-receipt/scope.txt"
+          grep -E '^[A-Z0-9_]+=(PASS|NOT_TESTED)$' "$RUNNER_TEMP/runtime.log" | sort -u > "$RUNNER_TEMP/public-regression-receipt/markers.txt" || true
+          (cd "$RUNNER_TEMP/public-regression-receipt" && sha256sum scope.txt markers.txt > SHA256SUMS)
+          exit "$rc"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: candidate-runtime-regression-${{ matrix.profile }}
+          path: ${{ runner.temp }}/public-regression-receipt/
+          retention-days: 7
+          if-no-files-found: warn
