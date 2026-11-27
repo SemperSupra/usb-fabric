@@ -1,0 +1,46 @@
+#!/bin/sh
+set -eu
+/bin/busybox --install -s /bin
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+say() { printf '%s\n' "$*" | tee /dev/tty0; }
+for f in /modules/*.ko; do
+    [ -f "$f" ] || continue
+    insmod "$f" || { say "GUEST_MODULE_LOAD_FAILED"; exec sh; }
+done
+clear >/dev/tty0 || true
+say "USB FABRIC / LINUX GUEST EVALUATION"
+say "==================================="
+say "Actual Linux sysfs and evdev observations"
+say ""
+i=0
+event=""
+while [ "$i" -lt 45 ]; do
+    for n in /sys/class/input/event*/device/name; do
+        [ -r "$n" ] || continue
+        case "$(cat "$n")" in
+            *QEMU*Keyboard*) event="/dev/input/$(basename "$(dirname "$(dirname "$n")")")"; break ;;
+        esac
+    done
+    [ -n "$event" ] && [ -c "$event" ] && break
+    i=$((i+1))
+    sleep 1
+done
+[ -n "$event" ] && [ -c "$event" ] || { say "GUEST_KEYBOARD_MISSING"; exec sh; }
+found=0
+for d in /sys/bus/usb/devices/*; do
+    [ -r "$d/idVendor" ] && [ -r "$d/idProduct" ] || continue
+    vendor="$(cat "$d/idVendor")"
+    product="$(cat "$d/idProduct")"
+    name="$(cat "$d/product" 2>/dev/null || true)"
+    say "USB $vendor:$product $name"
+    case "$name" in *QEMU*Keyboard*) found=1;; esac
+done
+[ "$found" = 1 ] || { say "GUEST_USB_KEYBOARD_NOT_ENUMERATED"; exec sh; }
+say "GUEST_USB_KEYBOARD_ENUMERATED=PASS"
+say "Waiting for host QMP input..."
+/bin/observe "$event" | tee /dev/tty0
+# The observer supplies its own ordered down/up markers. A failure cannot forge them.
+say "GUEST_OBSERVER_EXIT"
+while :; do sleep 60; done
