@@ -20,14 +20,13 @@ jobs:
         run: |
           python3 -I scripts/build-public-pages.py "$RUNNER_TEMP/public-site"
           test -s "$RUNNER_TEMP/public-site/index.html"
-      - name: Upload documentation for deployment
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      - name: Package public documentation (no deployment permissions)
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ${{ runner.temp }}/public-site
           retention-days: 1
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.PUBLIC_PAGES_ENABLED == 'true'
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 10
