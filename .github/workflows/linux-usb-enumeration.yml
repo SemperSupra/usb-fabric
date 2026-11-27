@@ -1,0 +1,39 @@
+name: Linux guest USB enumeration
+on:
+  push:
+    branches: ['qualification/linux-guest-usb-enumeration']
+    paths: ['lab/linux-usb-enumeration/**', '.github/workflows/linux-usb-enumeration.yml']
+  pull_request:
+    paths: ['lab/linux-usb-enumeration/**', '.github/workflows/linux-usb-enumeration.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: linux-usb-enumeration-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  guest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Install distribution kernel and QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 busybox-static cpio kmod zstd xz-utils linux-image-generic
+          sudo chmod a+r /boot/vmlinuz-*-generic
+      - name: Observe virtual USB devices inside Linux
+        run: |
+          bash -n lab/linux-usb-enumeration/run.sh
+          bash lab/linux-usb-enumeration/run.sh "$RUNNER_TEMP/linux-usb-evidence"
+          (cd "$RUNNER_TEMP/linux-usb-evidence"; sha256sum -c SHA256SUMS)
+      - name: Preserve experiment evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: linux-guest-usb-enumeration-not-release
+          path: ${{ runner.temp }}/linux-usb-evidence/
+          if-no-files-found: warn
+          retention-days: 7
