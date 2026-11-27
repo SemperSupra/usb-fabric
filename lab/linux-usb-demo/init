@@ -35,7 +35,9 @@ bound_device() {
     for d in /sys/bus/usb/devices/*; do
         [ -r "$d/idVendor" ] && [ -r "$d/idProduct" ] || continue
         [ "$(cat "$d/idVendor")" = "0627" ] || continue
-        [ "$(cat "$d/idProduct")" = "$target" ] || continue
+        [ "$(cat "$d/idProduct")" = "0001" ] || continue
+        [ -r "$d/product" ] || continue
+        [ "$(cat "$d/product")" = "$target" ] || continue
         for interface in "$d":*; do
             [ -L "$interface/driver" ] || continue
             [ "$(basename "$(readlink "$interface/driver")")" = "usbhid" ] || continue
@@ -45,13 +47,13 @@ bound_device() {
     [ "$count" -eq 1 ]
 }
 i=0
-until bound_device 0001 && bound_device 0002; do
+until bound_device 'QEMU USB Keyboard' && bound_device 'QEMU USB Tablet'; do
     i=$((i+1))
     [ "$i" -lt 45 ] || { say "GUEST_USB_HID_BINDING_FAILED"; exec sh; }
     sleep 1
 done
 say "USB 0627:0001 keyboard usbhid"
-say "USB 0627:0002 tablet usbhid"
+say "USB 0627:0001 tablet usbhid"
 say "GUEST_USB_KEYBOARD_ENUMERATED=PASS"
 say "GUEST_USB_KEYBOARD_DRIVER_BOUND=PASS"
 say "GUEST_USB_TABLET_ENUMERATED=PASS"
