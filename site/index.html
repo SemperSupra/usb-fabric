@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USB Fabric | Project documentation</title>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,sans-serif;line-height:1.6}
+body{max-width:48rem;margin:4rem auto;padding:0 1.5rem}
+header{border-bottom:1px solid #888;padding-bottom:1.5rem}
+h1{font-size:2.5rem;line-height:1.2;margin:.2rem 0 1rem}
+h2{font-size:1.25rem;margin-top:2rem}
+a{color:inherit;text-underline-offset:.2em}
+.status{border:1px solid #888;padding:1rem;border-radius:.5rem}
+footer{border-top:1px solid #888;margin-top:3rem;padding-top:1rem;font-size:.9rem}
+</style>
+</head>
+<body>
+<header><p>SemperSupra · Virtual USB</p><h1>USB Fabric</h1><p>A USB connection authority for virtual devices, with native QEMU and managed USB/IP as separate qualification profiles.</p></header>
+<main>
+<h2>Release status</h2>
+<p class="status"><strong>Pre-release documentation.</strong> No production release or installable distribution is announced here. Do not treat development builds as qualified releases.</p>
+<h2>Scope</h2><p>QEMU virtual HID and managed Linux USB/IP.</p>
+<h2>Qualification</h2><p>The native and managed profiles require independent runtime, recovery and integration evidence before release.</p>
+<h2>Source and releases</h2><p>See the <a href="https://github.com/SemperSupra/usb-fabric">public repository</a> for the current source status and <a href="https://github.com/SemperSupra/usb-fabric/releases">GitHub Releases</a> for any published distribution. Release instructions will accompany the applicable version.</p>
+<h2>Reproduce this documentation</h2><p>From a checkout of the public repository, run <code>python3 -I scripts/build-public-pages.py /tmp/public-site-new</code>. The output directory must not already exist. Open its index.html in a browser. This command builds documentation only, not the product.</p>
+</main>
+<footer>Documentation only. No physical-device, production or runtime claims.</footer>
+</body></html>
