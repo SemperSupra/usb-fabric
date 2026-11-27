@@ -15,7 +15,7 @@ The output directory must be new. Only the reviewed site/index.html is materiali
 
 ## GitHub Actions and Pages
 
-Pull requests run the read-only site validation on a standard hosted Ubuntu runner. A push to main affecting the documentation files, or a manual workflow dispatch on main, builds and deploys the approved documentation. The deployment job alone receives Pages and OIDC permissions. In repository Settings > Pages, select GitHub Actions as the source; if Pages is unavailable, the deployment is blocked, not silently bypassed.
+Pull requests run the read-only site validation and package only the approved documentation on a standard hosted Ubuntu runner. They never deploy. A push to main affecting the documentation files, or a manual workflow dispatch on main, builds and deploys the approved documentation. The deployment job alone receives Pages and OIDC permissions. Before enabling deployments, select GitHub Actions in repository Settings > Pages, verify the github-pages environment protection, then set repository Actions variable PUBLIC_PAGES_ENABLED to true. Without explicit opt-in the deploy job is intentionally skipped; validation and packaging still run. A skipped job is not evidence of a deployed site. If enabled but misconfigured, deployment must fail visibly. A manual workflow dispatch on main can deploy after configuration.
 
 The site announces no product release. Public product releases require applicable licensing notices, standalone build/test instructions, exact-source qualification evidence and approved packages with checksums. Do not add experimental logs, private coordination records, sensitive data, or unqualified binaries to the site or release assets. A passed documentation workflow is not product qualification.
 
