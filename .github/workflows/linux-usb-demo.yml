@@ -1,10 +1,10 @@
-name: Linux guest USB keyboard evaluation
+name: Linux guest dual-HID evaluation
 on:
   push:
-    branches: [qualification/public-linux-usb-demo]
+    branches: [main, qualification/linux-dual-hid]
     paths: ['lab/linux-usb-demo/**', 'lab/qemu-usb-demo/run.py', '.github/workflows/linux-usb-demo.yml']
   pull_request:
-    paths: ['lab/linux-usb-demo/**', '.github/workflows/linux-usb-demo.yml']
+    paths: ['lab/linux-usb-demo/**', 'lab/qemu-usb-demo/run.py', '.github/workflows/linux-usb-demo.yml']
   workflow_dispatch:
 permissions:
   contents: read
