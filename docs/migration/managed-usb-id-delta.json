@@ -1,0 +1,22 @@
+{
+  "schema": "usb-fabric/qualified-forward-delta/v1",
+  "base": "3c1f75ddd728e1edeca4891e0cfc00b1f294e79c",
+  "qualification_wrapper": "c591b93e56ec03a464d9e82dc1fd577a6955ba77",
+  "changed": [
+    {
+      "path": "experiments/pi-usb-fabric-r27/typed-kernel-runtime/Dockerfile.base",
+      "mode": "100644",
+      "before": "51e864776bb0050dd834513d123faaf6dae2e8a3",
+      "after": "e7d9eeaed83dc26405f1a68aff21b63bff13e2f7"
+    }
+  ],
+  "run": 46072441871,
+  "job": 140752308600,
+  "artifact": {
+    "id": 15233249068,
+    "sha256": "3ffb2ce02973ce1615a15f728daa1a91aa4de4bff4346e13cfcf5ac32991c4b8"
+  },
+  "scope": "USB ID database assembly and actual three-kernel regression; no new grant, release or G4 claim",
+  "historical_manifest": "docs/migration/three-kernel-adoption.json",
+  "historical_manifest_rule": "Verify against the unchanged historical baseline; this delta supersedes only the specified blob. Do not rewrite origin."
+}
